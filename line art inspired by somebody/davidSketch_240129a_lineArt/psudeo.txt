@@ -1,0 +1,23 @@
+https://www.wikiart.org/en/gottfried-honegger/komposition-z-972-1988
+
+//FUNCTION RUNS ONCE AT THE START
+void setup(){
+  //set size of window
+//set stroke cap to square
+}
+
+// the draw function runs every frame, over and over
+// any code we have in here will run multiple times
+void draw(){
+ //make background color
+
+//set stroke to a small size
+//horizontal line in top center
+//vertical line
+//horizontal line in bottom center mirroring the top one
+
+//set stroke to a big size
+//put the line that goes through the ends of the lines from the open part of the box
+//put a line that connects to the same line
+
+}
