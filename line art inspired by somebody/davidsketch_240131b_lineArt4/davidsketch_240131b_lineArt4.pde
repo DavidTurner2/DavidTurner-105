@@ -12,7 +12,7 @@ void draw(){
   float hguidey = 160;
   float m = 0.66701596;
   boolean sw = true; 
-  PVector temp = new PVector(230,174.79);
+  PVector temp = new PVector(230,174);
   PVector temp2 = new PVector(245,184);
   float iox = 0.99;
   float ioy = -1.59;
@@ -39,26 +39,31 @@ void draw(){
   line(cornerx - i*10,cornery - i*-14.79,999,cornery - i*-14.79);
   
   line((cornerx - i*15)-140, (cornery -i*10)+206,cornerx - i*15, 9999);
+
+ pushMatrix();
+
+ float tw = 255;
+ float seg = 10;
  
  
- 
- for (int j = 0; j<10; j++) {
-     int tw = 255;
+     translate(temp.x + seg,temp.y + seg);
+
+     rotate(1.00);
+
+for (int j = 0; j<seg * 10; j+=seg) {
     if(sw){
     tw = 255;
     }
     else{tw = 50;
     }
     stroke(tw);
-    if (j == 9){
-      
-    }
-    else{
-    line(temp.x + j*9, temp.y, temp.x +900 +(j+ 1), temp.y);
+   
+
+    line(temp.x + j, temp.y, temp.x +(j+ seg), temp.y);
         sw = !sw;
-    }
-  }
- 
+}
+ popMatrix();
+
  
   }
     //rotate(TAU * 0.094);
