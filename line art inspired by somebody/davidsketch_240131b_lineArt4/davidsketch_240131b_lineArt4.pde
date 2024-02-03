@@ -60,22 +60,25 @@ void draw(){
   float tweak6 = 0.42;
   float tweak7 = 0.51;
   //variables i made from trial and error to align the segmented lines correctly
-  float idk = -17.70; 
+  float idk = -17.700; 
   float idk2 = 0.2;
   //push matrix so that the roation doesnt affect the lines in the loop thats above
     pushMatrix();
-//segment of the loop
+//length of each segment
  float seg = 18;
-
+/*i want to change the segment length to 9
+and change the loop to j<seg * 28 and fix the tweaking and add more imbetween
+tweaking to make this more accurate
+but i think its accurate enough already*/
 
 
   //rotate the segmented line
-     rotate(0.59);
+     rotate(0.590);
      //loop for applying gradient
 for(int k = 0; k<13; k++){
-  //loop for segmented line
+  //loop for segmented line j gets incremented by the length of each segement
    for (int j = 0; j<seg * 14; j+=seg) {
-     //affecting all horizontal lines beyond the first one
+     //affecting all horizontal lines inside tilted square beyond the first one
      if (k>=1){
     if (j == seg * 5 || j == seg * 8){
    if(k==4){
@@ -131,6 +134,7 @@ if(k==4){
             stroke(greyline);
     }
    } 
+   //first horizontal line added inside tilted square
    if(k==0){
         if(j<seg * 6 || j>seg * 7 ){
        stroke(greyline);
