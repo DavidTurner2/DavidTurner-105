@@ -50,8 +50,7 @@ void draw(){
   //vertical lines extruding from bottom of tilted square
   line((cornerx - i*15)-140, (cornery -i*10)+206,cornerx - i*15, 9999);
   }
-  //push matrix so that the roation doesnt affect the code above
-    pushMatrix();
+  
 //variables to manually tweak the gradient
   float tweak = 0.67;
   float tweak2 = 0.73;
@@ -60,6 +59,8 @@ void draw(){
   float tweak5 = 0.52;
   float tweak6 = 0.42;
   float tweak7 = 0.51;
+  //push matrix so that the roation doesnt affect the code above
+    pushMatrix();
 //segment of the loop
  float seg = 18;
 
@@ -217,4 +218,9 @@ if(k==4){
    fill(220);
    quad(335,245,296,306,214,423,284,319);
   
+}
+
+void mousePressed() {
+  //save the screen as a png file
+  save("InspiredArt.png");
 }
