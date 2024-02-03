@@ -59,14 +59,15 @@ void draw(){
   float tweak5 = 0.52;
   float tweak6 = 0.42;
   float tweak7 = 0.51;
-  //push matrix so that the roation doesnt affect the code above
+  //variables i made from trial and error to align the segmented lines correctly
+  float idk = -17.70; 
+  float idk2 = 0.2;
+  //push matrix so that the roation doesnt affect the lines in the loop thats above
     pushMatrix();
 //segment of the loop
  float seg = 18;
 
-//variables i made from trial and error to align the lines correctly
- float idk = -17.90; 
-  float idk2 = 0.2;
+
 
   //rotate the segmented line
      rotate(0.59);
@@ -222,5 +223,5 @@ if(k==4){
 
 void mousePressed() {
   //save the screen as a png file
-  save("InspiredArt.png");
+  save("InspiredArt4.png");
 }
