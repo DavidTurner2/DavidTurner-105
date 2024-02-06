@@ -227,5 +227,5 @@ if(k==4){
 
 void mousePressed() {
   //save the screen as a png file
-  save("InspiredArt4.png");
+  save(this + ".png");
 }
