@@ -1,3 +1,4 @@
+//inspired by truisms by jenny holzer
 //code runs at start
 void setup(){
   //declare pfont variable font
