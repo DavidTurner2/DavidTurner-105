@@ -1,34 +1,42 @@
-//inspired by Album cover from Venetian Snares - https://venetiansnares.bandcamp.com/album/traditional-synthesizer-music
-//add comments
+//inspired by Album cover from Traditional Synthesizer Music by Venetian Snares - https://venetiansnares.bandcamp.com/album/traditional-synthesizer-music
 //create global variable
 PFont font;
+//code runs at start
 void setup() {
+  //set size to 1000,940
   size(1000, 940);
+  //load font and assign it to global variable
   font = loadFont("FranklinGothic-Medium-48.vlw");
 }
-
+//code runs every frame until noloop function is called
 void draw() {
+  //set background to tinted white
   background(#f3f4ec);
+  //turn off stroke
   noStroke();
   fill(35);
   textFont(font, 57);
+  //make black square
   square(0, 260, 5902);
+  //draw album title
   text("Traditional Synthesizer Music", 54, 158);
   fill(#64afa0);
-
+//album author in blue green
   text("Venetian Snares", 53, 115);
-
+//white label art shapes
   fill(222);
   rect(33, 866, 11, 42, 0, 0, 0, 30);
   arc(60, 880, 23, 23, TAU * 0.25, TAU * 0.75, PIE);
   arc(64, 894, 23, 23, TAU * 0.75, TAU * 1.25, PIE);
   fill(253,82);
+  //small label author text
   textFont(font, 8);
   text("TIMESIG005", 34, 922);
-
+//green yellowish circle thats on a row not connected to the other circles
   fill(#7fb24a);
   circle(480, 850, 80);
   fill(#6db063);
+  //loops for creating diagonal rows of  circles that are the same color
   for (int i = 0; i < 2; i++) {
     circle(560+i*80, 770+i*80, 80);
   }
@@ -56,25 +64,26 @@ void draw() {
   for (int i = 0; i < 4; i++) {
     circle(640+i*80, 370+i*80, 80);
   }
-  //3 cyan circles
   fill(#955c8f);
   for (int i = 0; i < 3; i++) {
     circle(720+i*80, 370+i*80, 80);
   }
-  //two green circles
   fill(#b05274);
   for (int i = 0; i < 2; i++) {
     circle(800+i*80, 370+i*80, 80);
   }
-  //green yellowish circle thats on a row not connected to the other circles
+  //orange circle top right
   fill(#b15c48);
   circle(880, 370, 80);
   
+  //dark grey semi transpatent text for stereo
   fill(40,195);
   textFont(font,30);
   text("STEREO",856,40);
+  //stroke to black and stroke weight to 1.4
   stroke(0);
     strokeWeight(1.4);
+    //turn off fill
   noFill();
   //rectangle that holds noise wave
 rect(856,55,100,20);
@@ -116,6 +125,7 @@ line(889 + i,137,889 + i,150);
 for(float i = 0 ; i<99; i+=0.46){
   point(857 + i,170+-7*sin(i * PI/16.6));
 }
+//turn weight to 1.2
 strokeWeight(1.2);
 
 //noise wave
@@ -133,6 +143,7 @@ strokeWeight(1.2);
     dest1.x = dest.x;
     dest1.y = dest.y;
   }
+  //turn off loop to stop noise wave
   noLoop();
 }
 //code runs when the mouse is pressed

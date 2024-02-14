@@ -1,3 +1,4 @@
+//inspired by the album cover from do you know squarepusher by square pusher 
 //https://squarepusher.bandcamp.com/album/do-you-know-squarepusher
 //code runs at start
 void setup(){
