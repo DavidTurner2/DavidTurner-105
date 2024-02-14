@@ -80,6 +80,7 @@ for(int k = 0; k<13; k++){
    for (int j = 0; j<seg * 14; j+=seg) {
      //affecting all horizontal lines inside tilted square beyond the first one
      if (k>=1){
+       //conditional statements for edding stroke weight and gradients
     if (j == seg * 5 || j == seg * 8){
    if(k==4){
        strokeWeight(2);
