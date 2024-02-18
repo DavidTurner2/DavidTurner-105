@@ -1,3 +1,4 @@
+//needs comments
 PFont font;
 //code runs at start
 void setup() {
@@ -57,10 +58,10 @@ void draw() {
   line(273, 0, 273, 9000);
   strokeWeight(12);
   stroke(#ff0000);
-
+//routelines
   line(392, 0, 392, 2488);
   line(114, 35, 114, 2600);
-  pushMatrix();
+  //change stroke weight to 2
   strokeWeight(2);
   scale(0.56);
   translate(-40, 0);
@@ -122,9 +123,9 @@ void draw() {
     text(stops[stops.length-i-1], 757, 4430-i*150);
     text("Downtown & Brooklyn (Southbound)", 620, 4500);
   }
-  popMatrix();
 }
-void door(float x, float y, float open) {
+//draws door takes 3 parameters for position x position y and a value that determines wether its open or closed
+void door(float x, float y, int open) {
   if (open==0) {
     stroke(182);
     noFill();
@@ -133,8 +134,8 @@ void door(float x, float y, float open) {
   //  rect(x+275+9, y+506, 11, 21, 19, 31, 48, 16);
     line(x+271-15, y+501, x+271-15, y+550);
     line(x+271+15, y+501, x+271+15, y+550);
-    fill(0);
-    noStroke();
+    //fill(0);
+    //noStroke();
    // rect(x+294, y+500, 3, 50);
     //rect(x+239.3, y+500, 10, 50);
   } else {
@@ -145,4 +146,9 @@ void door(float x, float y, float open) {
     rect(x+277, y+506, 11, 21, 3, 3, 3, 3);
     line(x+271, y+500, x+271, y+550);
   }
+}
+//code runs when mouse is pressed
+void mousePressed(){
+ //save as png
+ save(this+".png");
 }
