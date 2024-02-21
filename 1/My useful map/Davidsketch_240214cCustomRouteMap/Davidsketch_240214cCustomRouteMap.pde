@@ -77,7 +77,7 @@ void draw() {
   scale(0.56);
   //move everything slightly
   translate(-40, 0);
-  //loop that displays doors
+  //loop that displays doors and circles and stops
   for (int i = 0; i<30; i++) {
     //conditional statements that determine if the door is opened or closed
     if (i>=0 && i <6 || i>=22 && i<25 || i>=26) {
@@ -110,7 +110,7 @@ void draw() {
   }
   //move everything slightly
   translate(-495, 0);
-  //loop that displays doors
+  //loop that displays doors and circles and stops
   for (int i = 0; i<30; i++) {
         //conditional statements that determine if the door is opened or closed
     if (i>=0 && i <4 || i>=5 && i<=7 || i>=24 && i<=28) {
@@ -136,6 +136,7 @@ void draw() {
       fill(168);
       text("<-either->", 594, 72-i);
     }
+    //grey circle as the stop
     fill(102);
     stroke(0);
     circle(739.5, 4424-i*150, 19);
