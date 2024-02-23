@@ -26,3 +26,7 @@ void draw(){
   image(ki[5],305,298);
 
 }
+
+void mousePressed(){
+  save(this+".png");
+}
