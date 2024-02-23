@@ -5,9 +5,8 @@ void setup() {
 float appear = 1;
 float x = random(700);
 float y = random(700);
-float r = random(255);
-float g = random(255);
-float b = random(255);
+color[] pallete = {#1D5AF5,#6B1DF5,#492B6F,#16186F,#91201A};
+color p = int(random(pallete.length-1));
 void draw() {
     timeup();
   stroke(appear);
@@ -24,14 +23,13 @@ void timeup() {
     appear=0;
     x = random(700);
     y = random(700);
-    r = random(255);
-    g = random(255);
-    b = random(255);
+    p = int(random(pallete.length-1));
   } else if (frameCount%19==0) {
     appear+= 2.1;
   }
 
   noStroke();
-  fill(r, g, b, appear);
+  fill(pallete[p], appear);
   circle(x, y, 500);
+  //saveFrame();
 }
