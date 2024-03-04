@@ -5,7 +5,7 @@ void setup() {
 float saved= 0;
 float setp = 0;
 void draw() {
-  setp += 0.0625;
+  setp = frameCount*0.0625;
   //println(setp);
   background(0);
 
@@ -19,11 +19,11 @@ void draw() {
 
     point(4 + i, 300+27*sin(setp+i * PI/2.0));
   }
-  if(setp == 6.3125*2){
+  if(setp >TAU*2){
     setp = 0;
-  //  noLoop();
+   // noLoop();
   }
-//saveFrame();
+//saveFrame("frames/####.png");
 }
 
 float charaterSine(float value) {
