@@ -4,7 +4,7 @@ void setup() {
 float step = 0;
 void draw() {
   background(50, 0, 0);
-  step+=1/9.000009;
+  step+=2/9.000009;
 
 
 
@@ -17,7 +17,7 @@ void draw() {
       line(lerp(300, 500, 2*sin(step/8)), 700, lerp(300, 500, 2*cos(step/8)), 500);
     } else {
       pushMatrix();
-      scale(0.125*(sin(0.5*frameCount/9.000009)));
+      scale(0.125*(sin(step/2)));
       ellipse(400, 400, 200*tan(step/2), sin(step/8)*100);
       stroke(#00bb00);
       strokeWeight(200*abs(sin(step/8)));
@@ -32,9 +32,9 @@ void draw() {
   strokeWeight(200*abs(sin(step/8)));
   translate(800, 0);
   line(lerp(800, 300, 2*sin(step/8)), 700, lerp(800, 300, 2*cos(step/8)), 500);
-  if (step>TAU*16) {
+  if (step>TAU*8) {
     step = 0;
-   // noLoop();
+    //noLoop();
   }
   //saveFrame("frames/####.png");
 }

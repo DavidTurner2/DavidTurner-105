@@ -2,8 +2,8 @@ void setup() {
   size(1000, 1000);
 }
 float step = 0.0;
-float opacity = 255;
-float opactiy2 = 0;
+float opacity = 0;
+float opactiy2 = 255;
 void draw() {
   background(0);
   step+=0.05;
@@ -33,6 +33,7 @@ void draw() {
     opacity = 0;
     opactiy2 = 255;
     step = 0;
+    //noLoop();
   }
   fill(0, 100+55*abs(sin(step)), 200+55*abs(sin(step)), opacity);
 
@@ -53,4 +54,5 @@ void draw() {
     fill(200+200*abs(sin(step)), 100+200*abs(sin(step)), 0, 200*abs(sin(step)));
     circle(10*sin(step)+500+400*cos(step+i*100), 10*cos(step)+500+400*sin(step+i*-100), 10+50*abs(sin(step*2)));
   }
+//saveFrame("frames/####.png");
 }
