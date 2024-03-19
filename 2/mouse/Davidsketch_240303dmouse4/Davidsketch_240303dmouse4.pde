@@ -4,7 +4,7 @@ int maxwaves = 5;   // total # of waves to add together
 float[] amplitude = new float[maxwaves];   // Height of wave
 float[] dx = new float[maxwaves];          // Value for incrementing X, to be calculated as a function of period and xspacing
 float[] yvalues;                           // Using an array to store height values for the wave (not entirely necessary)
-
+//duplicate values for the other additive waves
 float[] amplitude2 = new float[maxwaves];
 float[] dx2 = new float[maxwaves];
 float[] yvalues2;
@@ -12,9 +12,13 @@ float[] amplitude3 = new float[maxwaves];
 float[] dx3 = new float[maxwaves];
 float[] yvalues3;
 
+//code runs at start
 void setup() {
+  //set size to 1100,1000
   size(1100, 1000);
+  //change color mode to hue satuaration brightness with max value being 360 for all those properties
   colorMode(HSB, 360);
+  //for loops to create additive waves
   for (int i = 0; i < maxwaves; i++) {
     amplitude[i] = random(6, 17);
     float period = random(10, 60); // How many pixels before the wave repeats
@@ -34,21 +38,31 @@ void setup() {
   }
   yvalues3 = new float[2200];
 }
+//a global array of stepping for saving where a specific wave rotated to
 float[] step = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//global variable for controlling specifically when the the scale and translation animates
 float zoom;
-
+//saved positions for when not hovering over wave(one is set to 2 becuase a point was on top of another wave)
 float[] saved = {0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//global variable for making the wave change colors when hovering over it
 float animation = 0;
+//boolean array for which wave to has stopped being zoomed in to
 boolean[] stop = {false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
-
+//code runs every frame
 void draw() {
+  //set background to white using hex value
   background(#ffffff);
+  //for loop incrementing all the steps
   for (int i =0; i<step.length; i++) {
     step[i] += 1/9.009;
   }
+  //increment zoom
   zoom+= 1/9.009;
+  //for loop going through the boolean array stop
   for (int i = 0; i<stop.length; i++) {
+    //if the particular index of array is stopped
     if (stop[i] ==true) {
+      //conditional statements based on the value of the index of where to zoom in to
       if (i>=0&&i<4) {
         scale((float)easeInOutBack(map(constrain(zoom/2, 0, 7.30), 1, 5, 0, 1)));
         translate(lerp(0, -39-275*i, map((float)easeInOutBack(map(constrain(zoom/2, 0, 7.00), 1, 5, 0, 1)), 0, 4.0949097, 0, 1)),
@@ -116,9 +130,11 @@ void draw() {
       }
     }
   }
+  //for loop for displaying first set of waves on 0
   for (int k = 0; k<4; k++) {
     wave(k, k*275, 0);
   }
+  // make white rectangles for where the waves are going to be in 
   fill(#ffffff);
   for (int j = 1; j<4; j++) {
     for (int i = 0; i<4; i++) {
@@ -126,12 +142,15 @@ void draw() {
       rect(40+i*275, 150 + j*225, 200, 150);
     }
   }
-  wave(15, 3*275, 3*225);
+  //put this wave first before the white rectangles
+ wave(15, 3*275, 3*225);
+ //turn off stroke make white rectangles to hide the waves outside of the rectangle
 fill(#ffffff);
 noStroke();
 rect(-26, 975, 1550, 150);
 rect(-117, 819, 983, 157);
 rect(1065, 819, 5000, 159);
+//plave the rest of the waves
   wave(4, 0, 225);
   wave(5, 1*275, 225);
   wave(6, 2*275, 225);
@@ -143,15 +162,17 @@ rect(1065, 819, 5000, 159);
   wave(12, 0, 3*225);
   wave(13, 1*275, 3*225);
   wave(14, 2*275, 3*225);
+  //make extra white rectangles to hide any extra things
   noFill();
   strokeWeight(3);
   for (int j = 0; j<4; j++) {
     for (int i = 0; i<4; i++) {
       stroke(0);
-      rect(40+i*275, 150 + j*225, 200, 150);
+     rect(40+i*275, 150 + j*225, 200, 150);
     }
   }
 }
+//easing function from easings.net
 double easeInOutBack(float x) {
   double c1 = 1.70158;
   double c2 = c1 * 1.525;
@@ -159,9 +180,22 @@ double easeInOutBack(float x) {
     ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
     : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
 }
+//wave function where x is the wave being dispayes and tx and ty are the positions
 void wave(int x, int tx, int ty) {
+  //for loop that make sures the specific wave is animating
   for (int j = 0; j<step.length; j++) {
+    //if the wave selected matches with the particular step index value
     if (x==j) {
+      /*conditional statements that display different waves
+      they check the mouse position based on the tx and ty positions entered into the function
+      when the mouse is hovering over the animation variable starts incrementing
+      animation variable gets used in stroke to make a cool color zipping effect
+      when the animation variable reaches a certain amount then the stop at the index of that particular wave gets called and it zooms in on that wave
+      when zoomed in animation gets set back to zero 
+      if you move your mouse up then stop at that index gets set to false and it goes back to normal
+      
+      
+      */
       if (j==0) {
         for (float i = 0; i<200; i+=0.9) {
           if (stop[j] == false) {
@@ -610,7 +644,7 @@ void wave(int x, int tx, int ty) {
     }
   }
 }
-
+//additive wave functions modified to use the position from the wave function and the value is what makes this wave animated
 void calcWave(float value, int tx, int ty) {
   // Set all height values to zero
   for (int i = 0; i < yvalues.length; i++) {
@@ -669,6 +703,8 @@ void calcWave3(float value, int tx, int ty) {
     }
     point(tx+40+i*xspacing, 898+ yvalues3[int(i)]);
   }
+  
+//diferent expiremental sine functions
 }
 float charaterSine(float value) {
   return (log(sin(value)/2)*exp(sin((value)/2)));
