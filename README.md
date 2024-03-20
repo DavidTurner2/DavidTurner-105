@@ -1,6 +1,6 @@
 # DavidTurnerG105
 David Turner's creations with Processing
->## 1
+>## U1
 > **line art inspired by somebody**
 >
 > trying to recreate old line art as accurately as i can
@@ -21,20 +21,20 @@ David Turner's creations with Processing
 >
 >a route map/strip map of some stops from the 2 train showing which side the doors will open up on
 
->## 2
+>## U2
 > **Collage**
 >
-> updated read me
+> making a collage out of images I have
 >
->**2**
+>**Layering Art**
 >
->dfdn
+>making animated art without the background
 >
->**3**
+>**mouse**
 >
->renhret
+>making programs that utilize mouse positions
 >
->**4**
+>**looping gifs**
 >
->ehri can
+>perfectly looping animations
 >
