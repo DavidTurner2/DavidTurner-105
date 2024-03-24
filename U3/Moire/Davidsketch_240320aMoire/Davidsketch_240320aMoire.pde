@@ -47,7 +47,11 @@ void draw() {
     for (int i = 0; i<123; i++) {
       //change stroke based on for loop
       stroke(100+i*2, i*2, 0, 150);
-      line(j*20+100+i*1, 800, j*20+0+i*0.5, 0);
+      line(j*20+100+i*1, 400, j*20+0+i*0.5, 200);
+      //extra line at slightl;y differnt
+      stroke(i*2, i*2, 100, 100);
+      line(j*19.88+110+i*1.002, 600.78, j*19.99+110+i*0.465, 99.67);
+
       translate(10*cos(step/2.0002), 100*sin(step/1.0002));
       translate(722, 375);
       rotate(sstep/30.00673);

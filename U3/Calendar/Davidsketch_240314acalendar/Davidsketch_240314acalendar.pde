@@ -1,16 +1,19 @@
 PFont font;
+
 void setup() {
   font = loadFont("Wingdings-Regular-48.vlw");
-  size(100, 200);
+}
+void settings(){
+    size(displayWidth, displayHeight);
 }
 
 void draw() {
   int spacing = 150;
-  textFont(font, spacing/8);
+ // textFont(font, spacing/8);
   int spacing2 = 10;
   background(0);
   text(year(), 10, 30);
-  translate((month()-1)*-spacing, -100);
+ //translate(-frameCount, 0);
   for (int i = 1; i<32; i++) {
     text("JAN.\n "+i, spacing2+0, 0+i* spacing/2);
   }
@@ -33,7 +36,6 @@ void draw() {
     }
   }
 
-
-
-  windowResize(spacing, (-2+spacing/2)*(day()+1));
+  //windowResize(200,200);
+  //windowMove(frameCount, 0);
 }
