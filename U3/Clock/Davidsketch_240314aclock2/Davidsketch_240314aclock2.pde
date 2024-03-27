@@ -37,11 +37,11 @@ void draw() {
     stroke(255);
     noFill();
     strokeWeight(50);
-    
-   
-    translate(width/2,height/2);
+
+
+    translate(width/2, height/2);
     rotate(step/8);
-        translate(-width/2,-height/2);
+    translate(-width/2, -height/2);
 
     strokeWeight(1);
     for (int j = 0; j<20; j++) {
@@ -52,11 +52,44 @@ void draw() {
           width/1.00*sin(step/32), height/6.16);
       }
     }
-
   }
-  
-  if(hour()==21){
-    
+
+  if (hour()==9) {
+    stroke(200+100*sin(step/99.023),100+sin(step/4),100);
+    noFill();
+    pushMatrix();
+    for (int i = 0; i<20; i++) {
+      translate(width/2*sin(step/99.009), height/2*sin(step/99.009));
+      rotate((step/299.00923));
+      strokeWeight(i);
+      arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
+    }
+    popMatrix();
+    for (int i = 0; i<34; i++) {
+      translate(width/2*sin(step/99.009), height/2*sin(step/99.009));
+      rotate(-(step/199.00923));
+      strokeWeight(i);
+      arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
+    }
+  }
+
+  if (hour()==10) {
+    translate(width/2, height/2);
+    stroke(255);
+    for (int i = 0; i<70; i++) {
+      rotate(0.1);
+      line(width/2*(sin(frameCount/23.009)), height/4+i*0.3, width/3, height/1.5*cos(i*sin(frameCount/99.009))+100+i+i*0.3);
+    }
+  }
+
+  if (hour()==11) {
+    translate(width/2, height/2);
+    for (int i = 0; i<70; i++) {
+      stroke(255, i*2, i*3);
+
+      rotate(frameCount/99.009);
+      line(width/3*(sin(frameCount/23.009)), height/4+i*0.3, width/2, height/1.5*tan(i*sin(frameCount/99.009))+i+i*0.3);
+    }
   }
 
   //translate(-frameCount, 0);
@@ -66,6 +99,5 @@ void draw() {
   //windowMove(frameCount, 0);
 }
 
-void drawHex(){
-  
+void drawHex() {
 }
