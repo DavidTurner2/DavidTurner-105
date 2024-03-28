@@ -1,7 +1,12 @@
+//create gloabal varibale font
 PFont font;
+//code runs at start
 void setup() {
+  //set size to 800,800
   size(800, 800);
+  //load font from data folder and assign it to font variable
   font = loadFont("Wingdings-Regular-48.vlw");
+  //set stroke weight to 1.4
   strokeWeight(1.4);
 }
 
@@ -15,14 +20,12 @@ void draw() {
 
     text("PM", 530+100*-cos(millis()/120+i/10), 600+50*-sin(millis()/120+i/10));
   }
-
   scale(0.497);
   stroke(255);
   line(601, 25+720*1.0777, 200600, 25+720*1.0777);
   line(-200, 25+1441*1.0777, 200600, 25+1441*1.0777);
-  line(-200, 25+-1*1.0777, 200600, 25+-1*1.0777);
   noStroke();
-  fill(200);
+  fill(lerpColor(#f0f0f0, #e8ec4f, norm(sin(frameCount/99.009), -1, 1)));
   rect(0, 22, 199, 1556);
   rect(601, 22, 199, 1556);
   for (int i = 0; i<1440; i++) {
