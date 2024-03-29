@@ -13,24 +13,23 @@ float s = 0;
 float step = 0;
 float sstep;
 void draw() {
-  if(second()%2==0){
+  if (second()%2==0) {
     sstep+=0.008;
-   
+    // sstep += 0.051;
+  } else {
+
+    sstep += 0.051;
   }
-  else{
-   
-  sstep += 0.051;
-  }
-  
+
   step +=0.500;
- 
+
   background(0);
   pushMatrix();
   noFill();
   stroke(255);
   strokeWeight(6);
-  translate(-(int(width*1.30)+int((width/2)*sin(sstep))), -(int(height/1.75)+int((height/2)*cos(sstep))));
-  circle(displayWidth/2, displayHeight/2, displayHeight/1.29);
+  translate(-(int(displayWidth*0.375)+int((displayWidth*0.15)*sin(sstep))), -(int(displayHeight*0.375)+int((displayHeight*0.25)*cos(sstep))));
+  circle(displayWidth/2.25, displayHeight/2, displayHeight/1.7);
   popMatrix();
   pushMatrix();
   translate(width/1.45, height/1.5);
@@ -90,11 +89,13 @@ void draw() {
     arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
   }
   popMatrix();
+  
+  pushMatrix();
   translate(width/2, height/2);
-      scale(0.02);
-            rotate(step/10.01919);
+  scale(0.02);
+  rotate(step/10.01919);
   for (int j = 0; j<11; j++) {
-                rotate(step/100.01919);
+    rotate(step/100.01919);
     pushMatrix();
     //rotating random spiralling thing
     for (int i = 0; i<29; i++) {
@@ -109,12 +110,26 @@ void draw() {
     }
     popMatrix();
   }
+    popMatrix();
+      translate(-(int(displayWidth*0.375)+int((displayWidth*0.15)*sin(sstep))), -(int(displayHeight*0.375)+int((displayHeight*0.25)*cos(sstep))));
+ fill(255);
+  textSize(100);
+    text(hour(),(displayWidth/2.35+(displayWidth/10.05)*cos(step/16)),(displayHeight/2.0)+(displayHeight/4.8)*sin(step/16));
+  textSize(50);
+for(int i = 0; i<44; i++){
+  fill(255);  
+  if(i==0){
+      fill(255,0,0);
+  }
+   text("25",(displayWidth/2.30)+(displayHeight/4.1)*sin(sstep+i), (displayHeight/2)+(displayHeight/3.8)*cos(sstep+i));
+
+ // text("25",(displayWidth/2.30)+(displayHeight/4.1)*cos(i), (displayHeight/2)+(displayHeight/3.8)*sin(i));
+}
 
 
 
-
-  windowResize(a, b);
-  windowMove(int(width*1.30)+int((width/2)*sin(sstep)), int(height/1.75)+int((height/2)*cos(sstep)));
+ windowResize(a, b);
+ windowMove(int(displayWidth*0.375)+int((displayWidth*0.15)*sin(sstep)), int(displayHeight*0.375)+int((displayHeight*0.25)*cos(sstep)));
 }
 
 void drawHex() {
