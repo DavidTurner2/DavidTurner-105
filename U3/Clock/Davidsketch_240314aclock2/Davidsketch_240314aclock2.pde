@@ -158,15 +158,15 @@ void draw() {
    //text rotating
   translate(-(int(displayWidth*0.325)+int((displayWidth*0.15)*sin(sstep))), -(int(displayHeight*0.325)+int((displayHeight*0.25)*cos(sstep))));
   fill(255);
-  textSize(100);
+  textSize(displayWidth/18);
   text(change(hour())+":", (displayWidth/2.35+(displayWidth/10.05)*cos(step/16)), (displayHeight/2.0)+(displayHeight/4.8)*sin(step/16));
-  textSize(50);
+  textSize(displayWidth/44);
   for (int i = 0; i<44; i++) {
     fill(255);
     if (e) {
-     // if(i==0){
-      // fill(255,100+constrain(second()*3,0,155),constrain(second()*6,0,255)); 
-     // }
+      if(i==0){
+       fill(255,100+constrain(second()*3,0,155),constrain(second()*6,0,255)); 
+     }
       text(rng[i], (displayWidth/2.30)+(displayHeight/4.1)*sin(sstep+i), (displayHeight/2)+(displayHeight/3.8)*cos(sstep+i));
     } else {
       text(rng[i], (displayWidth/2.30)+(displayHeight/4.1)*sin(i), (displayHeight/2)+(displayHeight/3.8)*cos(i));
