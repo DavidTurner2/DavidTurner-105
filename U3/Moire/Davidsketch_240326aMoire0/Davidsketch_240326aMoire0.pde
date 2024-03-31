@@ -5,8 +5,8 @@ void setup() {
 }
 //code runs everyframe
 void draw() {
-  //set background to yellow
-  background(255, 255, 100);
+  //set background to pink
+  background(215, 55, 100);
   //turn off fill
   noFill();
   //SET stroke to black
@@ -39,7 +39,7 @@ void draw() {
   }
   popMatrix();
   //make stroke weight go up and down slightly mapping sine wave
-  strokeWeight(map(sin(frameCount/23.09), -1, 1, 1, 1.30394));
+  strokeWeight(1);
   //set stroke to yellow
   stroke(255, 255, 100, 220);
   //make lines overlap

@@ -50,26 +50,27 @@ void draw() {
   strokeWeight(6);
   translate(-(int(displayWidth*0.325)+int((displayWidth*0.15)*sin(sstep))), -(int(displayHeight*0.325)+int((displayHeight*0.25)*cos(sstep))));
   circle(displayWidth/2.25, displayHeight/2, displayHeight/1.7);
-  if(hour()%3==0){
-  //white lines roating in center of circle
-  strokeWeight(10);
-  translate(displayWidth/2.25, displayHeight/2);
-  stroke(255);
-  scale(0.2);
-  for (int i = 0; i<70; i++) {
-    rotate(0.1);
-    line(displayWidth/2*(sin(frameCount/23.009)), displayHeight/4+i*0.3, displayWidth/3, displayHeight/1.5*cos(i*sin(frameCount/99.009))+100+i+i*0.3);
-  }
-  
-  translate(width/1.45, height/1.5);
-  }else{
-      translate(displayWidth/2.25, displayHeight/2);
+  //every hour change background by
+  if (hour()%3==0) {
+    //white lines roating in center of circle
+    strokeWeight(10);
+    translate(displayWidth/2.25, displayHeight/2);
+    stroke(255);
+    scale(0.2);
+    for (int i = 0; i<70; i++) {
+      rotate(0.1);
+      line(displayWidth/2*(sin(frameCount/23.009)), displayHeight/4+i*0.3, displayWidth/3, displayHeight/1.5*cos(i*sin(frameCount/99.009))+100+i+i*0.3);
+    }
+
+    translate(width/1.45, height/1.5);
+  } else {
+    translate(displayWidth/2.25, displayHeight/2);
 
     scale(0.4);
-  translate(width/1.45, height/1.5);
+    translate(width/1.45, height/1.5);
 
-  
-  
+
+
     pushMatrix();
     translate(width/-4, height*-1.5);
     scale(0.02);
@@ -91,11 +92,10 @@ void draw() {
       }
       popMatrix();
     }
-     popMatrix();
-  
-  }  
-  
-  
+    popMatrix();
+  }
+
+
   if (hour()%2==0) {
     scale(4);
     pushMatrix();
@@ -109,34 +109,34 @@ void draw() {
     popMatrix();
     rotate(-sstep);
     popMatrix();
-  } else {    
-   scale(4);  
-  stroke(200+100*sin(step/99.023), 100+sin(step/4), 100);
-  noFill();
+  } else {
+    scale(4);
+    stroke(200+100*sin(step/99.023), 100+sin(step/4), 100);
+    noFill();
+    pushMatrix();
+    for (int i = 0; i<20; i++) {
+      translate(width/2*sin(step/99.009), height/2*sin(step/99.009));
+      rotate((step/299.00923));
+      strokeWeight(i);
+      arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
+    }
+    popMatrix();
+    for (int i = 0; i<34; i++) {
+      translate(width/2*sin(step/99.009), height/2*sin(step/99.009));
+      rotate(-(step/199.00923));
+      strokeWeight(i);
+      arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
+    }
+
+
+
+
+
+
+    popMatrix();
+  }
+
   pushMatrix();
-  for (int i = 0; i<20; i++) {
-    translate(width/2*sin(step/99.009), height/2*sin(step/99.009));
-    rotate((step/299.00923));
-    strokeWeight(i);
-    arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
-  }
-  popMatrix();
-  for (int i = 0; i<34; i++) {
-    translate(width/2*sin(step/99.009), height/2*sin(step/99.009));
-    rotate(-(step/199.00923));
-    strokeWeight(i);
-    arc(i+width/2, height/4, width/8, height/8, 0, 10*abs(sin(step/23.234)));
-  }
-        
-    
-    
-    
-    
-  
-     popMatrix();
-  }  
-  
-      pushMatrix();
   stroke(10, 150, 100);
   noFill();
   strokeWeight(50);
@@ -146,38 +146,38 @@ void draw() {
   strokeWeight(1);
   for (int j = 0; j<20; j++) {
     for (int i = 0; i<4; i++) {
+      //rotating curve with the screen
       curve(j*10+i*20+width/3.61*cos(step/20), height/1.29*sin(step/14.8),
         width/2.00, j*100+height/1.28*sin(step/40),
         width/1.00*cos(step/14.8), height/2.00,
         width/1.00*sin(step/32), height/6.16);
     }
   }
- popMatrix();
-  
+  popMatrix();
 
-   //text rotating
+
   translate(-(int(displayWidth*0.325)+int((displayWidth*0.15)*sin(sstep))), -(int(displayHeight*0.325)+int((displayHeight*0.25)*cos(sstep))));
+  //set fill to white
   fill(255);
-  textSize(displayWidth/18);
+  //hour in the inner circle
+  textSize(displayWidth/24);
   text(change(hour())+":", (displayWidth/2.35+(displayWidth/10.05)*cos(step/16)), (displayHeight/2.0)+(displayHeight/4.8)*sin(step/16));
+  //small text rotating every second it gets more white until a new minute starts it will display minute
   textSize(displayWidth/44);
   for (int i = 0; i<44; i++) {
     fill(255);
     if (e) {
-      if(i==0){
-       fill(255,100+constrain(second()*3,0,155),constrain(second()*6,0,255)); 
-     }
+      if (i==0) {
+        fill(255, 100+constrain(second()*3, 0, 155), constrain(second()*6, 0, 255));
+      }
       text(rng[i], (displayWidth/2.30)+(displayHeight/4.1)*sin(sstep+i), (displayHeight/2)+(displayHeight/3.8)*cos(sstep+i));
     } else {
       text(rng[i], (displayWidth/2.30)+(displayHeight/4.1)*sin(i), (displayHeight/2)+(displayHeight/3.8)*cos(i));
     }
-    // text(change2(minute()),(displayWidth/2.30)+(displayHeight/4.1)*sin(sstep+i), (displayHeight/2)+(displayHeight/3.8)*cos(sstep+i));
-
-    // text("25",(displayWidth/2.30)+(displayHeight/4.1)*cos(i), (displayHeight/2)+(displayHeight/3.8)*sin(i));
   }
 
 
-
+  //resize window and move it in a circle based on the display
   windowResize(displayWidth/5, displayHeight/3);
   windowMove(int(displayWidth*0.325)+int((displayWidth*0.15)*sin(sstep)), int(displayHeight*0.325)+int((displayHeight*0.25)*cos(sstep)));
 }
