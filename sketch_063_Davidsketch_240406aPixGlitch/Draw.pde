@@ -12,7 +12,6 @@ class Draw {
   boolean f = false;
   boolean f2 = true;
   boolean f3 = true;
-
   String mode = "";
   Draw() {
     erase();
@@ -56,12 +55,12 @@ class Draw {
             //i have no idea why this works
           } else {
             if ((mouseX>line2.get(i)-30&&mouseX<line2.get(i)+30&&mouseY>line2.get(i+1)-30&&mouseY<line2.get(i+1)+30)||(mouseX>line.get(i)-30&&mouseX<line.get(i)+30&&mouseY>line.get(i+1)-30&&mouseY<line.get(i+1)+30))
-             col2.set(i, hex(color(255, 0)));
-              //turns lines into dots
-              //line2.set(i,line.get(i));
-              //line2.set(i+1,line.get(i+1));
-              //set to bgc before it changes
-              //col2.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
+              col2.set(i, hex(color(255, 0)));
+            //turns lines into dots
+            //line2.set(i,line.get(i));
+            //line2.set(i+1,line.get(i+1));
+            //set to bgc before it changes
+            //col2.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
           }
         }
         //erase glitch lines
@@ -70,12 +69,12 @@ class Draw {
             //i have no idea why this works
           } else {
             if ((mouseX>lines2.get(i)-30&&mouseX<lines2.get(i)+30&&mouseY>lines2.get(i+1)-30&&mouseY<lines2.get(i+1)+30)||(mouseX>lines.get(i)-30&&mouseX<lines.get(i)+30&&mouseY>lines.get(i+1)-30&&mouseY<lines.get(i+1)+30))
-             col.set(i, hex(color(255, 0)));
-              //turns lines into dots
-              //line2.set(i,line.get(i));
-              //line2.set(i+1,line.get(i+1));
-              //set to bgc before it changes
-              //col2.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
+              col.set(i, hex(color(255, 0)));
+            //turns lines into dots
+            //line2.set(i,line.get(i));
+            //line2.set(i+1,line.get(i+1));
+            //set to bgc before it changes
+            //col2.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
           }
         }
       }
