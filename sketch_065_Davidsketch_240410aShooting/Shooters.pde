@@ -10,33 +10,50 @@ class Shooters {
   PVector[] direction = new PVector[100];
   //shooting rates list for the shooters
   IntList times = new IntList(24, 24, 90, 60, 70, 69, 69, 90, 50, 37, 50, 50, 50, 25);
-  float[] sign = {-1, 1, -1, 1};
+  //temporary value for storing score
   int temp = 0;
+  //current amount of enemies
+  int enemies = 1;
+
   Shooters() {
+    //reset everything
     restart();
   }
   void update() {
+    //when framecount is divisible by 120 then increase score and set temp to score
     if (frameCount%120==0) {
       score++;
       temp = score;
     }
-
+    //every 50 points the shoot times get shuffled
     if (frameCount%(120*50)==0) {
       times.shuffle();
     }
+    //loop for checking every 20 points until 180 to ncrease enemy count
     for (int i = 20; i<200; i+=20) {
+      //check temp so that it does increase enemie count while its equal
       if (temp == i) {
+        //increase temp so that this doesnt run again
         temp++;
-        p[i/20] = new PVector(400/1.5, 400/1.5);
+        //increase enemies by 1
+        enemies++;
       }
     }
-    for (int i = 0; i<10; i++) {
+    //spawning bullets
+    for (int i = 0; i<enemies; i++) {
+      //check framecount is divisble by the time of the bullet in the array
       if (frameCount%times.get(i)==0) {
+        //offset so that the shooters use maximum of 10 bullets of the 100 bullets
         if (offset[i]>8+i*10) {
           offset[i] = i*10;
         }
         offset[i]++;
+        //play ball shoot sound
+        ball.play(0.7);
+        //set bullet to
         bullet[offset[i]].set(400+p[i].x, 400+p[i].y, 20);
+
+        //check which angle the shooter is on and set direction based on it
         if (p[i].heading()>PI/2) {
           direction[offset[i]].set(4, -1*2+random(4));
         } else if (p[i].heading()<-PI/2) {
@@ -48,16 +65,30 @@ class Shooters {
         }
       }
     }
-    //bullets
+    //bullets moving
+    //set fill to white
     fill(255);
     for (int i = 0; i<bullet.length; i++) {
+      //circle that gets assign to bullet positions
       circle(bullet[i].x, bullet[i].y, 20);
       if (i == 98) {
+        //troll bullet make it look like a health but its not
         fill(0, 255, 0);
       }
-      if (sel.x == 400&&sel.y==400) {
+      //check if player is out of bounds
+      //stop bgm play out of bounds music make all spawned bullets go directly towards you
+      if (out) {
+        bgm.stop();
+        if (!bound.isPlaying()) {
+          bound.loop();
+        }
         bullet[i].lerp(sel, 0.1);
       } else {
+        bound.stop();
+        if (!bgm.isPlaying()) {
+          bgm.loop();
+        }
+        //if not out of bounds make bullet go towards its direction 
         bullet[i].add(direction[i]);
       }
       //when you get hit by bullets take off health make screen go red and shake using hurt variable
@@ -72,7 +103,7 @@ class Shooters {
     //println(degrees(p[0].heading()));
     if (score>222) {
       for (int i = 0; i<p.length; i++) {
-        p[0].rotate(sign[int(random(sign.length))]*random(0.009, 0.09));
+        p[i].rotate(random(0.09, 0.9));
       }
     } else {
       p[0].rotate(.005);
@@ -89,10 +120,10 @@ class Shooters {
     strokeWeight(1);
     noFill();
     strokeWeight(9);
-    //shooters
+    //spawning shooters as a bunch of random points going around + 25 - 25
     for (int i =0; i<20; i++) {
       stroke(255, 90);
-      for (int j = 0; j<10; j++) {
+      for (int j = 0; j<enemies; j++) {
         point(400+p[j].x+random(-25, 25), 400+p[j].y+random(-25, 25));
       }
     }
@@ -105,11 +136,7 @@ class Shooters {
     }
     //spawn all shooters randomoly on the circle
     for (int i = 0; i<10; i++) {
-      if (i ==0) {
-        p[i] = new PVector(400/1.5, 400/1.5);
-      } else {
-        p[i] = new PVector(40000/1.5, 40000/1.5);
-      }
+      p[i] = new PVector(400/1.5, 400/1.5);
       p[i].rotate(random(-4, 4));
     }
   }
