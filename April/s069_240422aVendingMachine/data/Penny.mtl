@@ -1,0 +1,64 @@
+newmtl lambert2SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd vending_initialShadingGroup_BaseColor.png
+map_Ka vending_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert3SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Bag_initialShadingGroup_BaseColor.png
+map_Ka Bag_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert4SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd can_initialShadingGroup_BaseColor.png
+map_Ka can_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert5SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd bottle_initialShadingGroup_BaseColor.png
+map_Ka bottle_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert6SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Quarter_initialShadingGroup_BaseColor.png
+map_Ka Quarter_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert7SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Dollar_initialShadingGroup_BaseColor.png
+map_Ka Dollar_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert8SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Nickle_initialShadingGroup_BaseColor.png
+map_Ka Nickle_initialShadingGroup_BaseColor.png
+Ni 1.00
+newmtl lambert9SG
+illum 4
+Kd 0.00 0.00 0.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+map_Kd Penny_initialShadingGroup_BaseColor.png
+map_Ka Penny_initialShadingGroup_BaseColor.png
+Ni 1.00
