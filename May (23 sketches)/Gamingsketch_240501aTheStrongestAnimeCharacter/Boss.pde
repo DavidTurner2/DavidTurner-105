@@ -32,22 +32,28 @@ class Boss {
     
     tint(lerpColor(#ff123a, #ffffff, slide), 255);
     p.lerp(to, 400, 0, constrain(slide, 0, 1));
+    noStroke();
+    fill(#ff0000);
+      arc(p.x+100,p.y,50,50,0,map(time,0,10,0,2*PI),PIE);
+
     image(boss, p.x, p.y, sx, sy);
   }
 //hurt and do something elese when dead
   void hurt() {
     if(alive){
+      step2 = 0;
     for (int i =0; i<degrade.length; i++) {
       degrade[i]=100;
       prev[i] = new PVector(p.x, p.y);
       slide2[i]=0;
     }
     slide = 0;
-    health-=1;
+    health-=4;
     if(health<0){
+      step2 = 1;
       alive = false;
     }
-    to=random(0, 400);
+    to=random(-120, 400);
     }
   }
 }
