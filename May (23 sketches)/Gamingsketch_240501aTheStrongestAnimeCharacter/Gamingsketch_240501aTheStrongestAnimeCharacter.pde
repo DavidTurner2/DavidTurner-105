@@ -5,6 +5,7 @@ PImage boss;
 //create objects
 Boss b = new Boss();
 Player p = new Player();
+float step = 1;
 //radial timer when about to hit
 void setup() {
   size(600, 800);
@@ -14,9 +15,15 @@ void setup() {
 }
 
 void draw() {
+  step+=0.322214;
   background(240);
-  tint(189, 100, 150, 200);
+  tint(lerpColor(#ff0000,#ffffff,step));
   image(bg, 0, 0, 600, 800);
+  textSize(30);
+  fill(255);
+  text("Luffy",-2,23);
+    text("Boruto",496,23);
+
   b.update();
   p.update();
 }
@@ -50,7 +57,7 @@ class Player {
     float space = 2.00;
     //bars going up to current health for loop
     //fighting ui helath your health vs boss health
-
+    
     if (health>0) {
       for (int i = 0; i<health; i++) {
         stroke(251, 2, 8);
@@ -58,6 +65,7 @@ class Player {
         line(10+i*space, 35, 10+i*space, 71);
       }
     }else{
+      step = 0;
       alive = false;
       textSize(50);
       fill(0);
@@ -76,5 +84,6 @@ class Player {
   void hurt() {
     //subtract health
     health-=35;
+    step = 0;
   }
 }

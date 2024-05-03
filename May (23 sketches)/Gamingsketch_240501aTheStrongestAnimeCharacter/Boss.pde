@@ -43,7 +43,7 @@ class Boss {
       slide2[i]=0;
     }
     slide = 0;
-    health-=99;
+    health-=1;
     if(health<0){
       alive = false;
     }
