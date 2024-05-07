@@ -1,80 +1,82 @@
+class Points {
+  float x, y;
+  Points(float x2, float y2) {
+    x = x2;
+    y = y2;
+  }
+}
+
+
 class Draw {
-  StringList col= new StringList();
-  StringList col2= new StringList();
-  float size;
+  StringList glitchColor= new StringList();
+  StringList lineColor= new StringList();
+  FloatList glitchSize = new FloatList();
+  FloatList lineSize = new FloatList();
+
+  //boolean to check if drawing
   boolean draw = false;
-  FloatList line = new FloatList();
-  FloatList line2 = new FloatList();
-  FloatList lines = new FloatList();
-  FloatList lines2 = new FloatList();
-  FloatList elines = new FloatList();
-  FloatList elines2 = new FloatList();
+
+
+  //regular lines
+  ArrayList <Points> line = new ArrayList<Points>();
+
+  //glitch lines
+  FloatList glitchLines = new FloatList();
+  FloatList glitchLines2 = new FloatList();
+  //boolean variables for fixing glitchLines so that they arent always connected
   boolean f = false;
   boolean f2 = true;
   boolean f3 = true;
+  //the mode of which things to perform when clicking
   String mode = "";
   Draw() {
     erase();
   }
 
-  void pixelColor(color x) {
+  void pixelColor(color x, float y) {
     //drawing
     if (draw) {
       if (mode == "glitch") {
-        col.append(hex(x));
-        col.append(hex(x));
-
-        lines2.append(mouseX);
-        lines2.append(mouseY);
-
-        lines.append(pmouseX);
-        lines.append(pmouseY);
-        if (f3 == true) {
-          for (int i =0; i<18; i++) {
-            lines.append(mouseX);
-            lines.append(mouseY);
-          }
-          f3 = false;
-        }
-        f = true;
+        glitch(x);
       }
       if ( mode == "normal") {
-        col2.append(hex(x));
-        col2.append(hex(x));
+        lineColor.append(hex(x));
+        lineColor.append(hex(x));
+        lineSize.append(y);
+        lineSize.append(y);
 
-        line2.append(mouseX);
-        line2.append(mouseY);
-
-        line.append(pmouseX);
-        line.append(pmouseY);
+        line.add(new Points(mouseX, mouseY));
+        line.add(new Points(pmouseX, pmouseY));
       }
-      if ( mode == "deleteLines") {
-        //erase normal lines
-        for (int i = 0; i<line2.size()-1; i++) {
+      if ( mode == "deleteglitchLines") {
+        //erase normal glitchLines
+        for (int i = 0; i<line.size()-1; i++) {
           if (i%2==1) {
             //i have no idea why this works
           } else {
-            if ((mouseX>line2.get(i)-30&&mouseX<line2.get(i)+30&&mouseY>line2.get(i+1)-30&&mouseY<line2.get(i+1)+30)||(mouseX>line.get(i)-30&&mouseX<line.get(i)+30&&mouseY>line.get(i+1)-30&&mouseY<line.get(i+1)+30))
-              col2.set(i, hex(color(255, 0)));
-            //turns lines into dots
-            //line2.set(i,line.get(i));
-            //line2.set(i+1,line.get(i+1));
+            if (!(get(mouseX, mouseY)==bgc)&&mousePressed) {//(mouseX>line2.get(i)-30&&mouseX<line2.get(i)+30&&mouseY>line2.get(i+1)-30&&mouseY<line2.get(i+1)+30)||(mouseX>line.get(i)-30&&mouseX<line.get(i)+30&&mouseY>line.get(i+1)-30&&mouseY<line.get(i+1)+30))
+              println(get(mouseX, mouseY));
+            } else {
+              println(get(mouseX, mouseY));
+            }
+            // lineColor.set(i, hex(color(255, 0)));
+
+
             //set to bgc before it changes
-            //col2.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
+            //lineColor.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
           }
         }
-        //erase glitch lines
-        for (int i = 0; i<lines2.size()-1; i++) {
+
+        //erase glitch glitchLines
+        for (int i = 0; i<glitchLines2.size()-1; i++) {
           if (i%2==1) {
             //i have no idea why this works
           } else {
-            if ((mouseX>lines2.get(i)-30&&mouseX<lines2.get(i)+30&&mouseY>lines2.get(i+1)-30&&mouseY<lines2.get(i+1)+30)||(mouseX>lines.get(i)-30&&mouseX<lines.get(i)+30&&mouseY>lines.get(i+1)-30&&mouseY<lines.get(i+1)+30))
-              col.set(i, hex(color(255, 0)));
-            //turns lines into dots
-            //line2.set(i,line.get(i));
-            //line2.set(i+1,line.get(i+1));
+            // if ((mouseX>glitchLines2.get(i)-30&&mouseX<glitchLines2.get(i)+30&&mouseY>glitchLines2.get(i+1)-30&&mouseY<glitchLines2.get(i+1)+30)||(mouseX>glitchLines.get(i)-30&&mouseX<glitchLines.get(i)+30&&mouseY>glitchLines.get(i+1)-30&&mouseY<glitchLines.get(i+1)+30))
+            glitchColor.set(i, hex(color(255, 0)));
+
             //set to bgc before it changes
-            //col2.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
+            //lineColor.set(i, hex(color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)))));
           }
         }
       }
@@ -82,44 +84,43 @@ class Draw {
 
     //displaying drawn things
 
-    //glitch lines
+    //glitch glitchLines
     strokeWeight(1);
-    for (int i = 0; i<lines2.size()-1; i++) {
+    for (int i = 0; i<glitchLines2.size()-1; i++) {
       if (i%2==1) {
         //i have no idea why this works
       } else {
-        stroke(unhex(col.get(i)));
-        line(lines.get(i), lines.get((i+1)), lines2.get(i), lines2.get((i+1)));
+        stroke(unhex(glitchColor.get(i)));
+        line(glitchLines.get(i), glitchLines.get((i+1)), glitchLines2.get(i), glitchLines2.get((i+1)));
       }
     }
 
-    //normal lines
-    strokeWeight(4);
-    for (int i = 0; i<line2.size()-1; i++) {
+    //normal Lines
+    for (int i = 0; i<line.size()-1; i++) {
       if (i%2==1) {
         //i have no idea why this works
       } else {
-        stroke(unhex(col2.get(i)));
-        line(line.get(i), line.get((i+1)), line2.get(i), line2.get((i+1)));
+        strokeWeight(lineSize.get(i));
+        stroke(unhex(lineColor.get(i)));
+        line(line.get(i).x, line.get(i).y, line.get(i+1).x, line.get(i+1).y);
       }
     }
-
-    //eraser lines
-    strokeWeight(24);
   }
 
   void erase() {
-    lines.clear();
-    lines2.clear();
     line.clear();
-    line2.clear();
+    glitchLines.clear();
+    glitchLines2.clear();
+    glitchColor.clear();
+    lineColor.clear();
+    lineSize.clear();
   }
 
   void fix() {
     if (mode == "glitch"&&f&&f2) {
-      if (lines.size()>74) {
+      if (glitchLines.size()>74) {
         for (int i = 1; i<37; i++) {
-          lines.remove(lines.size()-i);
+          glitchLines.remove(glitchLines.size()-i);
           f = false;
           f2 = false;
         }
@@ -129,5 +130,22 @@ class Draw {
       f2 = true;
       f3 = true;
     }
+  }
+
+  void glitch(color x) {
+    glitchColor.append(hex(x));
+    glitchColor.append(hex(x));
+    glitchLines2.append(mouseX);
+    glitchLines2.append(mouseY);
+    glitchLines.append(pmouseX);
+    glitchLines.append(pmouseY);
+    if (f3 == true) {
+      for (int i =0; i<18; i++) {
+        glitchLines.append(mouseX);
+        glitchLines.append(mouseY);
+      }
+      f3 = false;
+    }
+    f = true;
   }
 }
