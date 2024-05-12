@@ -3,14 +3,17 @@ class Button {
   float size = 20;
   String mode;
   boolean selected = false;
-  Button(float x, float y, String z) {
-    pos.set(x, y);
+  Button(String z) {
     mode = z;
   }
-  void position() {
+  void position(float x, float y) {
+    pos.set(x, y);
+
     if (pos.dist(sel)<size) {
       selected = true;
-
+      if (mode=="undo") {
+        p.mode="fsdf";
+      }
       fill(100);
     } else {
       selected = false;
@@ -26,8 +29,13 @@ class Button {
 
   void activate() {
     if (selected) {
-      if (mode == "erase") {
+      if (mode == "clear") {
         p.erase();
+      } else if (mode == "undo") {
+        p.undo();
+        p.mode="addsf";
+      } else if (mode == "redo") {
+        //
       } else {
         p.mode = mode;
       }
@@ -36,11 +44,15 @@ class Button {
 }
 
 class ColorSelector {
+  //pvector of line controlling color
   PVector a = new PVector(0, 0);
+  //pvector of circle on line
   PVector circle = new PVector(0, 0);
-  float control = 0;
+  //boolean checking if automatically changes
   boolean gradient = false;
-  boolean dragging = true;
+  //boolean checking if dragging
+  boolean dragging = false;
+  boolean selected = false;
 
   ColorSelector(float x, float y) {
     a.set(x, y);
@@ -60,9 +72,14 @@ class ColorSelector {
     noStroke();
     fill(255);
     circle(circle.x, circle.y, 12);
-    if (circle.dist(sel)<24&&dragging) {
+    if (circle.dist(sel)<24) {
+      selected = true;
+      if(dragging){
       circle.set(a.x, constrain(sel.y, a.y, a.y+255));
       c=(color(map(circle.y, a.y, a.y+255, 0, 255)));
+      }
+    } else{
+      selected = false;
     }
   }
 
@@ -75,12 +92,16 @@ class ColorSelector {
 
 
 class SizeSelector {
+  //pvector of line controlling size
   PVector a = new PVector(0, 0);
+  //pvector of circle on line
   PVector circle = new PVector(0, 0);
-  float control = 0;
+  //boolean checking if automatically changes
   boolean gradient = false;
-  boolean dragging = true;
+  //boolean checking if dragging
+  boolean dragging = false;
 
+boolean selected = false;
   SizeSelector(float x, float y) {
     a.set(x, y);
     circle.set(x, y);
@@ -99,9 +120,14 @@ class SizeSelector {
     noStroke();
     fill(255);
     circle(circle.x, circle.y, 12);
-    if (circle.dist(sel)<24&&dragging) {
+    if (circle.dist(sel)<24) {
+      selected = true;
+      if(dragging){
       circle.set(a.x, constrain(sel.y, a.y, a.y+255));
       s=((map(circle.y, a.y, a.y+255, 4, 40)));
+      }
+    }else{
+      selected = false;
     }
   }
 
