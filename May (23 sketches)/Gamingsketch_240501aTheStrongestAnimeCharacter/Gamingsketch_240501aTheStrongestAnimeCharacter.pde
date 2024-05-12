@@ -54,6 +54,14 @@ void mousePressed() {
       p.hurt();
     }
   }
+  
+  if(p.alive==false){
+    p.health = 100;
+    p.alive = true;
+    b.health = 10000;
+    b.p.set(100, 400);
+    b.to = 100;
+  }
 }
 
 class Player {
@@ -81,7 +89,7 @@ class Player {
       alive = false;
       textSize(50);
       fill(0);
-      text("Game Over", 240, 300);
+      text("Game Over\ntry again?", 240, 300);
     }
     float space2 = 2.00;
 
