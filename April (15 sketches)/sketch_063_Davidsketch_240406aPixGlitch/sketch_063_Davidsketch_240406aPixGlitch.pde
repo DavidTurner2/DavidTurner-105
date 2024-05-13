@@ -11,15 +11,21 @@ Button tangent = new Button("tangent");
 Button rectangle = new Button("rect");
 Button ellipse = new Button("ellipse");
 Button undo = new Button("undo");
+Button redo = new Button("redo");
+Button menu = new Button("menu");
 
 Button sine = new Button("sine");
 Button WD = new Button("WD");
 //create selector objects that change color/size
-ColorSelector cs = new ColorSelector(777, 54);
-SizeSelector ss = new SizeSelector(777, 320);
+int h = 800;
+int w = 800;
+ColorSelector cs = new ColorSelector(w/1.03, h/14.81);
+SizeSelector ss = new SizeSelector(w/1.03, h/2.5);
 //image variables for cursors
 PImage wingDing;
 PImage pencil;
+PImage pencil2;
+
 boolean stop = false;
 PFont font;
 PFont wingdings;
@@ -41,12 +47,16 @@ void setup() {
   //load images
   wingDing = loadImage("WD.png");
   pencil = loadImage("Pencil.png");
+  pencil2 = loadImage("Pencil2.png");
   wingdings = loadFont("Wingdings-Regular-48.vlw");
   font = loadFont("VCROSDMono-48.vlw");
   //size 800,800
-  size(800, 800);
+  size(800,800);
+
+ // windowResizable(true); 
   //stroke cap project
   strokeCap(PROJECT);
+ 
 }
 //background color variable
 color bgc;
@@ -72,10 +82,18 @@ void draw() {
   translate(-500, -500);
   //run pixelcolor method for displaying lines
   p.pixelColor(c, s);
+  //displaying cursors
   if (p.mode=="normal") {
+    //show image of pencil
     image(pencil, sel.x-10, sel.y-40, 50, 50);
   }
+  if (p.mode=="glitch") {
+    //show image of pencil
+    tint(map(sin(frameCount/49.009), -1, 1, 100, 255), map(cos(frameCount/59.009), -1, 1, 100, 255), map(cos(1-frameCount/29.009), -1, 1, 100, 255), map(sin(frameCount/10.009), -1, 1, 200, 255));
+    image(pencil2, sel.x-10, sel.y-40, 50, 50);
+  }
   if (p.mode=="eraser") {
+    //show red square as eraser
     rectMode(CENTER);
     strokeWeight(1);
     stroke(255, 0, 0);
@@ -86,9 +104,10 @@ void draw() {
     image(wingDing, sel.x-10, sel.y-40, 50, 50);
   }
   if (p.mode=="sine") {
+    stroke(c);
     strokeWeight(s);
     if (adjust) {
-      lengthOfSine = int(map(constrain(sel.x, sinePos.x, sinePos.x+800), sinePos.x, sinePos.x+800, 5, 800));
+      lengthOfSine = int(map(constrain(sel.x, sinePos.x, sinePos.x+w), sinePos.x, sinePos.x+w, 5, w));
       for (int i = 0; i<lengthOfSine; i++) {
         line(sinePos.x+i*sineSpace, sinePos.y+amplitude*sin(i/9.009+sineOffset), sinePos2.x+i*sineSpace, sinePos2.y+amplitude*sin(i/9.009+sineOffset));
       }
@@ -106,14 +125,14 @@ void draw() {
   //border color
   fill(0, 255*(1/cos(frameCount/89.09)), 255*(1/tan(frameCount/89.09)));
   //borders
-  rect(0, -70, 818, 120);
-  rect(750, -90, 120, 1202);
-  rect(-60, 0, 120, 1202);
-  rect(0, 750, 1202, 120);
+  rect(0, -h/11.43, w+-17, h/6.8);
+  rect(w/1.07, -90, w/6.7, 9202);
+  rect(-w/14.03, 0, w/6.4, 9202);
+  rect(0, h/1.07, 9202, 120);
   //text
   fill(255, 200*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
   textFont(font, 40+20*abs(sin(5 *frameCount/99.09)));
-  text("GLITCH PIX", 290+20*-abs(sin(5*frameCount/99.09)), 45);
+  text("GLITCH PIX", w/2.7586+20*-abs(sin(5*frameCount/99.09)), h/17.77);
 
   //display color selector and size selector objects
   cs.display();
@@ -156,6 +175,7 @@ void mouseClicked() {
 
 
   sine.activate();
+
 }
 //code runs when mouse is dragged
 void mouseDragged() {
@@ -197,5 +217,6 @@ void mouseReleased() {
 }
 //code runs when key is pressed
 void keyPressed() {
+
   p.mode = "u";
 }

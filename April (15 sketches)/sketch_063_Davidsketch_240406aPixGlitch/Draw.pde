@@ -55,15 +55,17 @@ class Draw {
   void pixelColor(color x, float y) {
     //drawing
     if (draw) {
+      //if mode is glitch run glitch method
       if (mode == "glitch") {
         glitch(x);
       }
+      //if mode is normal or eraser
       if ( mode == "normal"||mode=="eraser") {
         order.add(new Order("n", normal));
         normal++;
         order.add(new Order("n", normal));
         normal++;
-
+        //if mode is normal append current color if its eraser append the letter e
         if (mode=="normal") {
           lineColor.append(hex(x));
           lineColor.append(hex(x));
@@ -72,6 +74,7 @@ class Draw {
           lineColor.append("e");
           lineColor.append("e");
         }
+        //append size
         lineSize.append(y);
         lineSize.append(y);
 
@@ -141,7 +144,7 @@ class Draw {
     lineColor.clear();
     lineSize.clear();
   }
-  
+  //remove from order by type and decrease incrementor
   void undo() {
     for (int j = 0; j<order.size()-1; j++) {
       if (order.get(j).type =="n") {
@@ -169,6 +172,7 @@ class Draw {
       }
 
       if (order.get(j).type =="wd") {
+        text--;
         redo.add(order.get(order.size()-1-j));
         order.remove(order.size()-1-j);
         redo.add(order.get(order.size()-1-j));
@@ -178,7 +182,7 @@ class Draw {
     }
   }
 
-  void trig(color x, float y,PVector sine,PVector sine2, float amp, int sineLength, int sinSpace,float sineOffset) {
+  void trig(color x, float y, PVector sine, PVector sine2, float amp, int sineLength, int sinSpace, float sineOffset) {
     if (mode == "sine"||mode=="tangent") {
       for (int i = 0; i<sineLength; i++) {
         lineColor.append(hex(x));
