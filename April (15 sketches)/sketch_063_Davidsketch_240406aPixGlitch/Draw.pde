@@ -85,7 +85,7 @@ class Draw {
       }
       //if mode is normal or eraser
       if ( mode == "normal"||mode=="eraser") {
-        
+
         lineSize.append(y);
         order.add(new Order("n", lineSize.size()));
         lineSize.append(y);
@@ -204,11 +204,15 @@ class Draw {
   void trig(color x, float y, PVector sine, float amp, int sineLength, int sinSpace, float sineOffset) {
     if (mode == "sine"||mode=="tangent") {
       for (int i = 0; i<sineLength; i++) {
-        if (mode == "sine") {          
+        if (mode == "sine") {
           order.add(new Order("trig", pointSize.size()));
           pointSize.append(y);
           pointColor.append(hex(x));
-          trig.add(new Points(sine.x+i*sinSpace, sine.y+amp*sin(i/9.009+sineOffset)));
+          if (slanted) {
+            trig.add(new Points(sine.x+i*sinSpace, sine.y+amp*sin(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10)));
+          } else {
+            trig.add(new Points(sine.x+i*sinSpace, sine.y+amp*sin(i/9.009+sineOffset)));
+          }
         } else if (mode == "tangent") {
           order.add(new Order("trig", pointSize.size()));
           pointSize.append(y);

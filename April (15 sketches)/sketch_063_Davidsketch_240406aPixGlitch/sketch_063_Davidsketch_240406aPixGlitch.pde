@@ -15,7 +15,7 @@ Button redo = new Button("redo");
 Button sine = new Button("sine");
 Button WD = new Button("WD");
 Button save = new Button("Save\nas\nPNG");
-
+MenuButton slant = new MenuButton();
 
 //create selector objects that change color/size
 Selector cs = new Selector(width/1.03, height/14.81, "color");
@@ -32,8 +32,6 @@ PImage pencil;
 PImage pencil2;
 //varibale to check if to stop drawing
 boolean stop = false;
-//if slanted
-boolean slanted = false;
 //regular text font
 PFont font;
 //pfont for wingdings
@@ -41,7 +39,6 @@ PFont wingdings;
 //curent color
 color c = 0;
 //speed for going up and down of selectors
-float speed = 50.049;
 //current size
 float s = 4;
 //amplitude for trigonemetric
@@ -62,6 +59,25 @@ boolean adjust = false;
 //value for allowing sine and recatangles to be released on right most border
 boolean pass = false;
 boolean menu = true;
+//secret menu variables
+//if slanted
+boolean slanted = false;
+boolean vertical = false;
+boolean appendbgc = false;
+boolean lerpBgc = true;
+float lerp = 0;
+int ampRange1 = 10;
+int ampRange2 = 30;
+float csSpeed = 50.049;
+float ssSpeed = 50.049;
+int colorRange1 = 0;
+int colorRange2 = 255;
+int sizeRange1 = 4;
+int sizeRange2 = 40;
+
+
+//bgclerping
+color[] bgcLerp ={#ff0000, #00ff00, #660000, #ffffff, #000000};
 //code runs at setup
 void setup() {
   //load images
@@ -94,7 +110,24 @@ void draw() {
   //set selector to mouse x and mouse y
   sel.set(mouseX, mouseY);
   //set bgc to variable
-  bgc = color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
+  if (lerpBgc) {
+    lerp+=0.01;
+    if (lerp<1) {
+      bgc = lerpColor(bgcLerp[0], bgcLerp[1], lerp);
+    } else if (lerp>1&&lerp<2) {
+      bgc = lerpColor(bgcLerp[1], bgcLerp[2], map(lerp, 1, 2, 0, 1));
+    } else if (lerp>2&&lerp<3) {
+      bgc = lerpColor(bgcLerp[2], bgcLerp[3], map(lerp, 2, 3, 0, 1));
+    } else if (lerp>3&&lerp<4) {
+      bgc = lerpColor(bgcLerp[3], bgcLerp[4], map(lerp, 3, 4, 0, 1));
+    }else if (lerp>4&&lerp<5){
+      bgc = lerpColor(bgcLerp[4], bgcLerp[0], map(lerp, 4, 5, 0, 1));
+    }else{
+      lerp = 0;
+    }
+  } else {
+    bgc = color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
+  }
   //set bgc to bgc variable
   background(bgc);
   if (menu) {
@@ -104,6 +137,12 @@ void draw() {
     fill(0);
     textFont(font, 40+10);
     text("GLITCH PIX", width/2.7586-20, height/17.77);
+    textFont(font, 20);
+    text("Background", 400, 300);
+    text("color=bgc", 200, 400);
+    text("vertical sine", 100, 350);
+    text("slanted trigonometry", 100, 300);
+    slant.position(100, 330, slanted);
   } else {
     //save as png by getting rid of borders and buttons and cursors and just show the drawing
     if (saving) {
@@ -157,6 +196,7 @@ void draw() {
       if (p.mode=="WD") {
         image(wingDing, sel.x-10, sel.y-40, 50, 50);
       }
+      //cursor for sine/tangent
       if (p.mode=="sine"||p.mode=="tangent") {
         stroke(c);
         strokeWeight(s);
@@ -194,7 +234,7 @@ void draw() {
           }
         }
       }
-
+      //cursor for rectangles/ellipses
       if (p.mode=="rect"||p.mode=="ellipse") {
         stroke(c);
         strokeWeight(s);
@@ -298,6 +338,10 @@ void mouseClicked() {
   if (collision(secret, secretw, secreth)) {
     menu=!menu;
   }
+
+  if (slant.selected) {
+    slanted=!slanted;
+  }
 }
 //code runs when mouse is dragged
 void mouseDragged() {
@@ -322,13 +366,14 @@ void mousePressed() {
   if (!(p.mode=="glitch")&&stop==false) {
     p.draw = true;
   }
+  if ((p.mode=="normal"||p.mode=="glitch"|| p.mode=="eraser")&&stop==false) {
+    p.undo();
+  }
 }
 //code runs when mouse is released
 void mouseReleased() {
   //fixing any index errors
-  if (p.mode=="normal"||p.mode=="glitch"|| p.mode=="eraser") {
-    p.undo();
-  }
+
   //releasing rectangle
   if (p.mode=="rect"&&stop==false) {
     p.rectangle(c, s, sinePos, wide, high);
@@ -359,6 +404,7 @@ void mouseReleased() {
 }
 //code runs when key is pressed
 void keyPressed() {
+  //println(int("123")+int("10"));
   if (key==unhex("0008")) {
     println("delete on mac");
   }

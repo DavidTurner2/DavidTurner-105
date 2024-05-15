@@ -72,14 +72,14 @@ class Selector {
     mode = m;
   }
 
-  void display(float x, float y) {
+  void display(float x, float y,float speed) {
     if (prev!=width) {
       updatePosition(x, y);
     }
     if (mode=="size") {
       if (gradient) {
         circle.y = lerp(a.y, a.y+255, norm(sin(frameCount/speed), -1, 1));
-        s=((map(sin(frameCount/speed), -1, 1, 4, 40)));
+        s=((map(sin(frameCount/speed), -1, 1, sizeRange1, sizeRange2)));
       }
       stroke(bgc);
       for (int i = 10; i<255+10; i++) {
@@ -115,7 +115,7 @@ class Selector {
         selected = true;
         if (dragging) {
           circle.set(a.x, constrain(sel.y, a.y, a.y+255));
-          c=(color(map(circle.y, a.y, a.y+255, 0, 255)));
+          c=(color(map(circle.y, a.y, a.y+255, colorRange1, colorRange2)));
         }
       } else {
         selected = false;
@@ -134,5 +134,32 @@ class Selector {
     circle.set(x, y);
     c=0;
     s=4;
+  }
+}
+
+class MenuButton {
+  PVector pos = new PVector(0, 0);
+  float size = 20;
+  boolean selected = false;
+  MenuButton() {
+  }
+
+  void position(float x, float y,boolean s) {
+    pos.set(x, y);
+    if (pos.dist(sel)<size) {
+      fill(100);
+      selected = true;
+    } else {
+      selected = false;
+      fill(255);
+    }
+    if (s) {
+      fill(100);
+    }
+    if(s&&selected){
+      fill(200);
+    }
+
+    circle(pos.x, pos.y, size);
   }
 }
