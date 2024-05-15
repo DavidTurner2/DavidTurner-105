@@ -6,30 +6,45 @@ class Points {
   }
 }
 
-
+class Rectangles {
+  float x, y, wide, high;
+  String wd;
+  Rectangles(float x2, float y2, float w, float h) {
+    x = x2;
+    y = y2;
+    wide=w;
+    high = h;
+  }
+}
 
 
 class Draw {
   //list of color of glitch lines;
   StringList glitchColor= new StringList();
-  //list of color of normal lines
-  StringList lineColor= new StringList();
   //size of glitch lines
   FloatList glitchSize = new FloatList();
-  //size of normal lines
+
+  //lists of colors and sizes for the modes
+  StringList lineColor= new StringList();
   FloatList lineSize = new FloatList();
   StringList textColor = new StringList();
+  //text type for displaying which text gets displayed
   StringList textType = new StringList();
   FloatList textSize = new FloatList();
-
+  StringList pointColor= new StringList();
+  FloatList pointSize = new FloatList();
+  StringList rectColor = new StringList();
+  FloatList rectSize = new FloatList();
+  StringList ellipseColor = new StringList();
+  FloatList ellipseSize = new FloatList();
+  //list of text to choose from
   String[] abc = {"Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M", ",", ".", "/", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
 
   //order to display those lines
   ArrayList <Order> order = new ArrayList<Order>();
   ArrayList <Order> redo = new ArrayList<Order>();
-  int glitch = 0;
-  int normal = 0;
-  int text = 0;
+
+
   //boolean to check if drawing
   boolean draw = false;
 
@@ -38,15 +53,24 @@ class Draw {
 
   //regular lines
   ArrayList <Points> line = new ArrayList<Points>();
-  ArrayList <Points> wd = new ArrayList<Points>();
+  //text
+  ArrayList <Rectangles> wd = new ArrayList<Rectangles>();
+  //points
+  ArrayList <Points> trig = new ArrayList<Points>();
+  //rectangles
+  ArrayList <Rectangles> rectangles = new ArrayList<Rectangles>();
+  ArrayList <Rectangles> ellipses = new ArrayList<Rectangles>();
+
 
   //glitch lines
   FloatList glitchLines = new FloatList();
   FloatList glitchLines2 = new FloatList();
+
   //boolean variables for fixing glitchLines so that they arent always connected
   boolean f = false;
   boolean f2 = true;
   boolean f3 = true;
+
   //the mode of which things to perform when clicking
   String mode = "";
   Draw() {
@@ -61,163 +85,169 @@ class Draw {
       }
       //if mode is normal or eraser
       if ( mode == "normal"||mode=="eraser") {
-        order.add(new Order("n", normal));
-        normal++;
-        order.add(new Order("n", normal));
-        normal++;
+        
+        lineSize.append(y);
+        order.add(new Order("n", lineSize.size()));
+        lineSize.append(y);
+        order.add(new Order("n", lineSize.size()));
+
         //if mode is normal append current color if its eraser append the letter e
         if (mode=="normal") {
           lineColor.append(hex(x));
           lineColor.append(hex(x));
         } else {
-
           lineColor.append("e");
           lineColor.append("e");
         }
-        //append size
-        lineSize.append(y);
-        lineSize.append(y);
-
         line.add(new Points(mouseX, mouseY));
         line.add(new Points(pmouseX, pmouseY));
       }
-      if (mode=="WD") {
-        if (frameCount%7==0) {
-          order.add(new Order("wd", text));
-          order.add(new Order("wd", text));
-          text++;
-          textColor.append(hex(x));
-          textType.append(abc[int(random(abc.length))]);
-          textSize.append(map(y, 4, 40, 40, 80));
-          wd.add(new Points(mouseX+random(-30, 10), mouseY+random(-30, 10)));
-        }
-      }
+      //adding text
     }
 
-    //displaying drawn things
+    //DISPLAYING drawn things
 
     //in order of when they were placed
-    for (int j = 0; j<order.size()-1; j++) {
+    for (int j = 0; j<order.size(); j++) {
       //NORMAL LINES
-      if (order.get(j).type=="n") {
+      if (order.get(j).type=="n"&&j<order.size()-1) {
         //get rid of symmetry
         if (j%2==1) {
         } else {
-          strokeWeight(lineSize.get(order.get(j).value));
-          if (lineColor.get(order.get(j).value)=="e") {
+          strokeWeight(lineSize.get(order.get(j).value-1));
+          if (lineColor.get(order.get(j).value-1)=="e") {
             stroke(bgc);
           } else {
-            stroke(unhex(lineColor.get(order.get(j).value)));
+            stroke(unhex(lineColor.get(order.get(j).value-1)));
           }
-          line(line.get(order.get(j).value).x, line.get(order.get(j).value).y, line.get(order.get(j).value+1).x, line.get(order.get(j).value+1).y);
+          line(line.get(order.get(j).value-1).x, line.get(order.get(j).value-1).y, line.get(order.get(j).value).x, line.get(order.get(j).value).y);
         }
       }
       //GLITCH LINES
-      if (order.get(j).type=="g") {
+      if (order.get(j).type=="g"&&j<order.size()-1) {
         strokeWeight(1);
         //get rid of symmetry
         if (j%2==1) {
         } else {
-          stroke(unhex(glitchColor.get(order.get(j).value)));
-          line(glitchLines.get(order.get(j).value), glitchLines.get((order.get(j).value+1)), glitchLines2.get(order.get(j).value), glitchLines2.get((order.get(j).value+1)));
+          stroke(unhex(glitchColor.get(order.get(j).value-1)));
+          line(glitchLines.get(order.get(j).value-1), glitchLines.get((order.get(j).value)), glitchLines2.get(order.get(j).value-1), glitchLines2.get((order.get(j).value)));
         }
       }
       //TEXT
       if (order.get(j).type=="wd") {
         fill(unhex(textColor.get(order.get(j).value)));
         textFont(wingdings, textSize.get(order.get(j).value));
-        text(textType.get(order.get(j).value), wd.get(order.get(j).value).x, wd.get(order.get(j).value).y);
+        text(wd.get(order.get(j).value).wd, wd.get(order.get(j).value).x, wd.get(order.get(j).value).y);
+      }
+      //TRIGONOMETRY
+      if (order.get(j).type=="trig") {
+        stroke(unhex(pointColor.get(order.get(j).value)));
+        strokeWeight(pointSize.get(order.get(j).value));
+        point(trig.get(order.get(j).value).x, trig.get(order.get(j).value).y);
+      }
+      //RECTANGLES
+      if (order.get(j).type=="rectangle") {
+        stroke(unhex(rectColor.get(order.get(j).value)));
+        strokeWeight(rectSize.get(order.get(j).value));
+        noFill();
+        rect(rectangles.get(order.get(j).value).x,
+          rectangles.get(order.get(j).value).y,
+          rectangles.get(order.get(j).value).wide,
+          rectangles.get(order.get(j).value).high);
+      }
+      if (order.get(j).type=="ellipse") {
+        stroke(unhex(ellipseColor.get(order.get(j).value)));
+        strokeWeight(ellipseSize.get(order.get(j).value));
+        noFill();
+        ellipse(ellipses.get(order.get(j).value).x,
+          ellipses.get(order.get(j).value).y,
+          ellipses.get(order.get(j).value).wide,
+          ellipses.get(order.get(j).value).high);
       }
     }
   }
   //code resets and clears all lists and objects
   void erase() {
-    glitch = 0;
-    normal = 0;
-    text = 0;
+
     wd.clear();
+    textColor.clear();
+    textSize.clear();
+    textType.clear();
     order.clear();
     line.clear();
+    trig.clear();
+    rectangles.clear();
+    rectSize.clear();
+    ellipses.clear();
+    ellipseSize.clear();
+    rectColor.clear();
+    ellipseColor.clear();
+    pointColor.clear();
+    pointSize.clear();
     glitchLines.clear();
     glitchLines2.clear();
     glitchColor.clear();
     lineColor.clear();
     lineSize.clear();
   }
+
   //remove from order by type and decrease incrementor
   void undo() {
-    for (int j = 0; j<order.size()-1; j++) {
-      if (order.get(j).type =="n") {
-        if (j%2==1) {
-          normal--;
-        } else {
-          redo.add(order.get(order.size()-1-j));
-          order.remove(order.size()-1-j);
-          redo.add(order.get(order.size()-1-j));
-          order.remove(order.size()-1-j);
-          return;
-        }
-      }
-
-      if (order.get(j).type =="g") {
-        if (j%2==1) {
-          glitch--;
-        } else {
-          redo.add(order.get(order.size()-1-j));
-          order.remove(order.size()-1-j);
-          redo.add(order.get(order.size()-1-j));
-          order.remove(order.size()-1-j);
-          return;
-        }
-      }
-
-      if (order.get(j).type =="wd") {
-        text--;
-        redo.add(order.get(order.size()-1-j));
-        order.remove(order.size()-1-j);
-        redo.add(order.get(order.size()-1-j));
-        order.remove(order.size()-1-j);
-        return;
-      }
+    if (order.size()>0) {
+      order.remove(order.size()-1);
     }
   }
 
-  void trig(color x, float y, PVector sine, PVector sine2, float amp, int sineLength, int sinSpace, float sineOffset) {
+
+
+  //trigonametric point adding
+  void trig(color x, float y, PVector sine, float amp, int sineLength, int sinSpace, float sineOffset) {
     if (mode == "sine"||mode=="tangent") {
       for (int i = 0; i<sineLength; i++) {
-        lineColor.append(hex(x));
-        lineColor.append(hex(x));
-        lineSize.append(y);
-        lineSize.append(y);
-        if (mode == "sine") {
-          order.add(new Order("n", normal));
-          normal++;
-          order.add(new Order("n", normal));
-          normal++;
-          line.add(new Points(sine.x+i*sinSpace, sine.y+amp*sin(i/9.009+sineOffset)));
-          line.add(new Points(sine2.x+i*sinSpace, sine2.y+amp*sin(i/9.009+sineOffset)));
+        if (mode == "sine") {          
+          order.add(new Order("trig", pointSize.size()));
+          pointSize.append(y);
+          pointColor.append(hex(x));
+          trig.add(new Points(sine.x+i*sinSpace, sine.y+amp*sin(i/9.009+sineOffset)));
         } else if (mode == "tangent") {
-          order.add(new Order("n", normal));
-          normal++;
-          order.add(new Order("n", normal));
-          normal++;
-          line.add(new Points(sine.x+i*sinSpace, sine.y+amp*tan(i/9.009+sineOffset)));
-          line.add(new Points(sine2.x+i*sinSpace, sine2.y+amp*tan(i/9.009+sineOffset)));
+          order.add(new Order("trig", pointSize.size()));
+          pointSize.append(y);
+          pointColor.append(hex(x));
+          trig.add(new Points(sine.x+i*sinSpace, sine.y+amp*tan(i/9.009+sineOffset)));
         }
       }
     }
   }
 
+  void rectangle(color x, float y, PVector rec, float wide, float high) {
+    rectColor.append(hex(x));
+    order.add(new Order("rectangle", rectSize.size()));
+    rectSize.append(y);
+    rectangles.add(new Rectangles(rec.x, rec.y, wide, high));
+  }
+
+  void ell(color x, float y, PVector rec, float wide, float high) {
+    ellipseColor.append(hex(x));
+    order.add(new Order("ellipse", ellipseSize.size()));
+    ellipseSize.append(y);
+    ellipses.add(new Rectangles(rec.x, rec.y, wide, high));
+  }
+
+  void wd(color x, float y, PVector rec) {
+    textColor.append(hex(x));
+    order.add(new Order("wd", textSize.size()));
+    textSize.append(y);
+    wd.add(new Rectangles(rec.x, rec.y, 0, 0));
+    wd.get(textSize.size()-1).wd = wing;
+  }
   //make glitchy lines
   void glitch(color x) {
     glitchLines2.append(mouseX);
     glitchLines2.append(mouseY);
     glitchColor.append(hex(x));
+    order.add(new Order("g", glitchColor.size()));
     glitchColor.append(hex(x));
-    order.add(new Order("g", glitch));
-    glitch++;
-    order.add(new Order("g", glitch));
-    glitch++;
+    order.add(new Order("g", glitchColor.size()));
     glitchLines.append(pmouseX);
     glitchLines.append(pmouseY);
     if (f3 == true) {

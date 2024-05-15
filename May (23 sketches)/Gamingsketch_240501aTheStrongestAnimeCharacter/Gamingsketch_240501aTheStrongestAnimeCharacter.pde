@@ -1,3 +1,4 @@
+//Boruto created by Naruto x Hinata
 //Photo by KoolShooters   from Pexels: https://www.pexels.com/photo/a-boxing-gym-9944633/
 PImage bg;
 //boss image
@@ -32,7 +33,7 @@ void draw() {
   textSize(30);
   fill(255);
 
-  text("monkey de lufy", -2, 23);
+  text(" You", -2, 23);
   text("Strongest Ninja", 380, 23);
 
   b.update();
@@ -54,8 +55,8 @@ void mousePressed() {
       p.hurt();
     }
   }
-  
-  if(p.alive==false){
+
+  if (p.alive==false) {
     p.health = 100;
     p.alive = true;
     b.health = 10000;
@@ -98,6 +99,10 @@ class Player {
       stroke(lerpColor(#ee00aa, color(86, 170, 241), step2));
       strokeWeight(2.0);
       line(580-i*space2, 35, 580-i*space2, 71);
+    }
+    if (b.health<10000) {
+      textSize(30);
+      text(b.health+"/10000", 400, 60);
     }
   }
   //hurt method

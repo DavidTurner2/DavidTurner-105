@@ -12,36 +12,56 @@ Button rectangle = new Button("rect");
 Button ellipse = new Button("ellipse");
 Button undo = new Button("undo");
 Button redo = new Button("redo");
-Button menu = new Button("menu");
-
 Button sine = new Button("sine");
 Button WD = new Button("WD");
+Button save = new Button("Save\nas\nPNG");
+
+
 //create selector objects that change color/size
-int h = 800;
-int w = 800;
-ColorSelector cs = new ColorSelector(w/1.03, h/14.81);
-SizeSelector ss = new SizeSelector(w/1.03, h/2.5);
+Selector cs = new Selector(width/1.03, height/14.81, "color");
+Selector ss = new Selector(width/1.03, height/2.5, "size");
+
+PVector secret;
+float secretw;
+float secreth;
+
+boolean saving = false;
 //image variables for cursors
 PImage wingDing;
 PImage pencil;
 PImage pencil2;
-
+//varibale to check if to stop drawing
 boolean stop = false;
+//if slanted
+boolean slanted = false;
+//regular text font
 PFont font;
+//pfont for wingdings
 PFont wingdings;
 //curent color
 color c = 0;
-//speed
+//speed for going up and down of selectors
 float speed = 50.049;
 //current size
 float s = 4;
+//amplitude for trigonemetric
 float amplitude = random(10, 30);
+//position for sine and tangent and rectangles need to change name
 PVector sinePos = new PVector(0, 0);
-PVector sinePos2 = new PVector(0, 0);
+//length of sine and tangent
 int lengthOfSine = 100;
+//spacing for sine and tangent
 int sineSpace = 1;
+//offset for sine and tangent
 float sineOffset = 0;
+//length of rectanfgle
+float wide = 100;
+//height of rectangle
+float high = 100;
 boolean adjust = false;
+//value for allowing sine and recatangles to be released on right most border
+boolean pass = false;
+boolean menu = true;
 //code runs at setup
 void setup() {
   //load images
@@ -51,17 +71,23 @@ void setup() {
   wingdings = loadFont("Wingdings-Regular-48.vlw");
   font = loadFont("VCROSDMono-48.vlw");
   //size 800,800
-  size(800,800);
-
- // windowResizable(true); 
+  size(800, 800);
+  //set window to resizable
+  windowResizable(true);
   //stroke cap project
   strokeCap(PROJECT);
- 
 }
 //background color variable
 color bgc;
+String wing;
 //code runs every frame
 void draw() {
+  secret = new PVector(width/2.91, -height/11.17);
+  secretw = width/2.37;
+  secreth = height/6.8;
+  //setting wing dings
+  wing = p.abc[int(random(p.abc.length-1))];
+  //setting amplitudes
   if (frameCount%15==0&&adjust==false) {
     amplitude = random(10, 30);
   }
@@ -71,94 +97,192 @@ void draw() {
   bgc = color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
   //set bgc to bgc variable
   background(bgc);
+  if (menu) {
+    noStroke();
+    fill(240);
+    rect(0, 0, width, height);
+    fill(0);
+    textFont(font, 40+10);
+    text("GLITCH PIX", width/2.7586-20, height/17.77);
+  } else {
+    //save as png by getting rid of borders and buttons and cursors and just show the drawing
+    if (saving) {
+      pushMatrix();
+      stroke(0);
+      //rotate slightly in center
+      translate(500, 500);
+      rotate(0.01*sin(2*frameCount/99.009));
+      translate(-500, -500);
 
-  //push matrix so transformations/scale/rotations dont affect the code below
-  pushMatrix();
-  stroke(0);
-  //rotate slightly in center
-  translate(500, 500);
-  rotate(0.01*sin(2*frameCount/99.009));
-
-  translate(-500, -500);
-  //run pixelcolor method for displaying lines
-  p.pixelColor(c, s);
-  //displaying cursors
-  if (p.mode=="normal") {
-    //show image of pencil
-    image(pencil, sel.x-10, sel.y-40, 50, 50);
-  }
-  if (p.mode=="glitch") {
-    //show image of pencil
-    tint(map(sin(frameCount/49.009), -1, 1, 100, 255), map(cos(frameCount/59.009), -1, 1, 100, 255), map(cos(1-frameCount/29.009), -1, 1, 100, 255), map(sin(frameCount/10.009), -1, 1, 200, 255));
-    image(pencil2, sel.x-10, sel.y-40, 50, 50);
-  }
-  if (p.mode=="eraser") {
-    //show red square as eraser
-    rectMode(CENTER);
-    strokeWeight(1);
-    stroke(255, 0, 0);
-    fill(255, 0, 0);
-    square(sel.x, sel.y, s);
-  }
-  if (p.mode=="WD") {
-    image(wingDing, sel.x-10, sel.y-40, 50, 50);
-  }
-  if (p.mode=="sine") {
-    stroke(c);
-    strokeWeight(s);
-    if (adjust) {
-      lengthOfSine = int(map(constrain(sel.x, sinePos.x, sinePos.x+w), sinePos.x, sinePos.x+w, 5, w));
-      for (int i = 0; i<lengthOfSine; i++) {
-        line(sinePos.x+i*sineSpace, sinePos.y+amplitude*sin(i/9.009+sineOffset), sinePos2.x+i*sineSpace, sinePos2.y+amplitude*sin(i/9.009+sineOffset));
-      }
+      rectMode(CORNER);
+      ellipseMode(CORNER);
+      //run pixelcolor method for displaying lines
+      p.pixelColor(c, s);
+      save(this+".png");
+      saving=false;
+      popMatrix();
     } else {
-      sineOffset+=0.075;
-      for (int i = 0; i<lengthOfSine; i++) {
-        sinePos.set(mouseX, mouseY);
-        sinePos2.set(pmouseX, pmouseY);
-        line(mouseX+i*sineSpace, mouseY+amplitude*sin(i/9.009+sineOffset), pmouseX+i*sineSpace, pmouseY+amplitude*sin(i/9.009+sineOffset));
+
+      //push matrix so transformations/scale/rotations dont affect the code below
+      pushMatrix();
+      stroke(0);
+      //rotate slightly in center
+      translate(500, 500);
+      rotate(0.01*sin(2*frameCount/99.009));
+      translate(-500, -500);
+
+      //run pixelcolor method for displaying lines
+      rectMode(CORNER);
+      ellipseMode(CORNER);
+      p.pixelColor(c, s);
+
+      //displaying cursors
+      if (p.mode=="normal") {
+        //show image of pencil
+        image(pencil, sel.x-10, sel.y-40, 50, 50);
+      }
+      if (p.mode=="glitch") {
+        //show image of pencil
+        tint(map(sin(frameCount/49.009), -1, 1, 100, 255), map(cos(frameCount/59.009), -1, 1, 100, 255), map(cos(1-frameCount/29.009), -1, 1, 100, 255), map(sin(frameCount/10.009), -1, 1, 200, 255));
+        image(pencil2, sel.x-10, sel.y-40, 50, 50);
+      }
+      if (p.mode=="eraser") {
+        //show red square as eraser
+        rectMode(CENTER);
+        strokeWeight(1);
+        stroke(255, 0, 0);
+        fill(255, 0, 0);
+        square(sel.x, sel.y, s);
+      }
+      if (p.mode=="WD") {
+        image(wingDing, sel.x-10, sel.y-40, 50, 50);
+      }
+      if (p.mode=="sine"||p.mode=="tangent") {
+        stroke(c);
+        strokeWeight(s);
+        if (adjust) {
+          lengthOfSine = int(map(constrain(sel.x, sinePos.x, sinePos.x+width), sinePos.x, sinePos.x+width, 5, width));
+          if (p.mode=="sine") {
+            for (int i = 0; i<lengthOfSine; i++) {
+              if (slanted) {
+                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*sin(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10));
+              } else {
+                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*sin(i/9.009+sineOffset));
+              }
+            }
+          } else {
+            for (int i = 0; i<lengthOfSine; i++) {
+              if (slanted) {
+                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*tan(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10));
+              } else {
+                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*tan(i/9.009+sineOffset));
+              }
+            }
+          }
+        } else {
+          sineOffset+=0.075;
+          if (p.mode=="sine") {
+            for (int i = 0; i<lengthOfSine; i++) {
+              sinePos.set(mouseX, mouseY);
+              point(mouseX+i*sineSpace, mouseY+amplitude*sin(i/9.009+sineOffset));
+            }
+          } else {
+            for (int i = 0; i<lengthOfSine; i++) {
+              sinePos.set(mouseX, mouseY);
+              point(mouseX+i*sineSpace, mouseY+amplitude*tan(i/9.009+sineOffset));
+            }
+          }
+        }
+      }
+
+      if (p.mode=="rect"||p.mode=="ellipse") {
+        stroke(c);
+        strokeWeight(s);
+        noFill();
+        if (adjust) {
+          wide = int(map(sel.x, sinePos.x, sinePos.x+width, 5, width));
+          high = int(map(sel.y, sinePos.y, sinePos.y+height, 5, height));
+          if (p.mode=="rect") {
+            rect(sinePos.x, sinePos.y, wide, high);
+          } else {
+            ellipse(sinePos.x, sinePos.y, wide, high);
+          }
+        } else {
+          sinePos.set(mouseX, mouseY);
+          if (p.mode=="rect") {
+            rect(sel.x, sel.y, wide, high);
+          } else {
+            ellipse(sel.x, sel.y, wide, high);
+          }
+        }
+      }
+      noStroke();
+      rectMode(CORNER);
+      //border color
+      fill(0, 255*(1/cos(frameCount/89.09)), 255*(1/tan(frameCount/89.09)));
+      //border pvecttors width and heights
+      PVector r1 = new PVector(0, -height/11.43);
+      float r1w = width+-17;
+      float r1h = height/6.8;
+      PVector r2 = new PVector(width/1.07, -90);
+      float r2w = width/6.7;
+      float r2h = 9202;
+      PVector r3 = new PVector(-width/14.03, 0);
+      float r3w = width/6.4;
+      float r3h = 9202;
+      PVector r4 = new PVector(0, height/1.07);
+      float r4w = 9202;
+      float r4h = 120;
+      //borders
+      rect(r1.x, r1.y, r1w, r1h);
+      rect(r2.x, r2.y, r2w, r2h);
+      rect(r3.x, r3.y, r3w, r3h);
+      rect(r4.x, r4.y, r4w, r4h);
+      //check if collided with borders set stop to true if collided with border
+      //also check if not in bounds
+      if (collision(r1, r1w, r1h)||collision(r2, r2w, r2h)
+        ||collision(r3, r3w, r3h)||collision(r4, r4w, r4h)
+        ||!(collision(new PVector(0, 0), width, height))) {
+        stop=true;
+      } else {
+        stop = false;
+      }
+      //let sine be passed on the right border
+      pass = collision(r2, r2w, r2h);
+
+      //text
+      fill(255, 200*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
+      textFont(font, 40+20*abs(sin(5 *frameCount/99.09)));
+      text("GLITCH PIX", width/2.7586+20*-abs(sin(5*frameCount/99.09)), height/17.77);
+
+      ellipseMode(CENTER);
+      //display color selector and size selector objects
+      cs.display(width/1.03, height/14.81);
+      ss.display(width/1.03, height/2.5);
+      popMatrix();
+      //put button objects at positions
+      WD.position(width/40, height/14.54);
+      ellipse.position(width/40, height/(14.54/2.3));
+      rectangle.position(width/40, height/(14.54/3.5));
+      sine.position(width/40, height/(14.54/4.7));
+      normal.position(width/40, height/(14.54/6));
+      tangent.position(width/40, height/(14.54/7.2));
+      glitch.position(width/40, height/(14.54/8.5));
+      eraser.position(width/40, height/(14.54/10));
+      undo.position(width/40, height/(14.54/11.5));
+      erase.position(width/40, height/(14.54/13));
+      save.position(width/1.03435324, height/(14.54/11.5));
+
+      if (mousePressed) {
+        undo.activate();
       }
     }
   }
-  noStroke();
-  rectMode(CORNER);
-  //border color
-  fill(0, 255*(1/cos(frameCount/89.09)), 255*(1/tan(frameCount/89.09)));
-  //borders
-  rect(0, -h/11.43, w+-17, h/6.8);
-  rect(w/1.07, -90, w/6.7, 9202);
-  rect(-w/14.03, 0, w/6.4, 9202);
-  rect(0, h/1.07, 9202, 120);
-  //text
-  fill(255, 200*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
-  textFont(font, 40+20*abs(sin(5 *frameCount/99.09)));
-  text("GLITCH PIX", w/2.7586+20*-abs(sin(5*frameCount/99.09)), h/17.77);
-
-  //display color selector and size selector objects
-  cs.display();
-  ss.display();
-  popMatrix();
-  //put button objects at positions position method takes two numbers
-  erase.position(19, 758);
-  eraser.position(18, 571);
-  normal.position(17, 340);
-  glitch.position(15, 476);
-  tangent.position(12, 404);
-  rectangle.position(13, 195);
-  ellipse.position(13, 129);
-  undo.position(22, 662);
-  if (mousePressed) {
-    undo.activate();
-  }
-
-  sine.position(21, 265);
-  WD.position(26, 55);
 }
 
 //code runs when mouse is clicked
 void mouseClicked() {
-
-
+  //activate clicking events on buttons and selectors
   cs.changeColor();
   ss.changeColor();
   erase.activate();
@@ -168,47 +292,65 @@ void mouseClicked() {
   rectangle.activate();
   ellipse.activate();
   WD.activate();
-  if (p.mode=="tangent") {
-    //p.trig(c, s,sinePos,sinePos2,amplitude,int(sel.x));
-  }
   tangent.activate();
-
-
   sine.activate();
-
+  save.activate();
+  if (collision(secret, secretw, secreth)) {
+    menu=!menu;
+  }
 }
 //code runs when mouse is dragged
 void mouseDragged() {
-
-
+  //draw only when dragged for glitch
   if (p.mode=="glitch"&&stop==false) {
     p.draw = true;
   }
+  //if selectors are selected and dragged
   if (cs.selected==true) {
     cs.dragging = true;
-    stop = true;
   }
   if (ss.selected==true) {
     ss.dragging = true;
-    stop = true;
   }
-  if (p.mode=="sine"&&cs.dragging==false&&ss.dragging==false) {
-    //p.trig(c, s);
+  //if mode requires adjustments
+  if ((p.mode=="sine"||p.mode=="tangent"||p.mode=="rect"||p.mode=="ellipse")&&stop==false) {
     adjust=true;
   }
 }
 //code runs when mouse is pressed
 void mousePressed() {
-  if (!(p.mode=="glitch")) {
+  if (!(p.mode=="glitch")&&stop==false) {
     p.draw = true;
   }
 }
 //code runs when mouse is released
 void mouseReleased() {
-  if (p.mode=="sine"&&cs.dragging==false) {
-    p.trig(c, s, sinePos, sinePos2, amplitude, lengthOfSine, sineSpace, sineOffset);
+  //fixing any index errors
+  if (p.mode=="normal"||p.mode=="glitch"|| p.mode=="eraser") {
+    p.undo();
   }
+  //releasing rectangle
+  if (p.mode=="rect"&&stop==false) {
+    p.rectangle(c, s, sinePos, wide, high);
+  }
+  //releasing ellipse
+  if (p.mode=="ellipse"&&stop==false) {
+    p.ell(c, s, sinePos, wide, high);
+  }
+  //releasing sine waves
+  if ((p.mode=="sine"||p.mode=="tangent")&&stop==false) {
+    p.trig(c, s, sinePos, amplitude, lengthOfSine, sineSpace, sineOffset);
+  } else if ((p.mode=="sine"||p.mode=="tangent")&&pass==true) {
+    //let you release if colliding on the right most border
+    p.trig(c, s, sinePos, amplitude, lengthOfSine, sineSpace, sineOffset);
+  }
+  //placing wingdings
+  if (p.mode=="WD") {
+    p.wd(c, map(s, 4, 40, 40, 80), sel);
+  }
+  //stop adjusting
   adjust=false;
+  //make everything false
   stop = false;
   p.draw = false;
   p.fix();
@@ -217,6 +359,24 @@ void mouseReleased() {
 }
 //code runs when key is pressed
 void keyPressed() {
+  if (key==unhex("0008")) {
+    println("delete on mac");
+  }
+  //undo on z
+  if (key =='z'||key=='Z') {
+    p.undo();
+  }
+  //also undo on x
+  if (key =='x'||key=='X') {
+    p.undo();
+  }
+}
 
-  p.mode = "u";
+//collision function returns true if colloding returns false if not colliding
+Boolean collision(PVector a, float wide, float high) {
+  if (sel.x>a.x&&sel.x<a.x+wide&&sel.y>a.y&&sel.y<a.y+high) {
+    return true;
+  } else {
+    return false;
+  }
 }
