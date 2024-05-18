@@ -129,7 +129,7 @@ class Selector {
     } else if (mode=="color") {
       if (gradient) {
         circle.y = lerp(a.y, a.y+255, norm(sin(frameCount/csSpeed.value), -1, 1));
-        c=(color(255*norm(sin(frameCount/csSpeed.value), -1, 1)));
+        c=(color(((map(sin(frameCount/csSpeed.value), -1, 1, colorRange1.value, colorRange2.value)))));
       }
       strokeWeight(2);
       for (int i = 0; i<255; i++) {
