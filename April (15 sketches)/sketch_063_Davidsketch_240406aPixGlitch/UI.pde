@@ -277,6 +277,7 @@ class NumberArea {
   float prev;
   //initialize array of saved values
   String[] saved = new String[20];
+  boolean init = false;
   NumberArea(float x) {
     //initialize array of saved values
     for ( int i= 0; i<20; i++) {
@@ -285,6 +286,7 @@ class NumberArea {
     prev = x;
     value = x;
     text = ""+x;
+    init = true;
   }
   //method sets position and other logic
   void position(float x, float y) {
@@ -316,6 +318,7 @@ class NumberArea {
     text(text, pos.x+2, pos.y+25);
   }
   void reset() {
+    init = true;
     increment = 0;
     value=prev;
     text = ""+prev;

@@ -106,7 +106,7 @@ ColorArea bgc1[] = {new ColorArea("FF0000"), new ColorArea("00FF00"), new ColorA
 //code runs at setup
 void setup() {
   eplot= new SoundFile(this, "ball.wav");
-  export = new SoundFile(this,"save.wav");
+  export = new SoundFile(this, "save.wav");
   drawing= new SoundFile(this, "drawn.wav");
   glitching= new SoundFile(this, "glitchy.wav");
   undoing= new SoundFile(this, "spin.wav");
@@ -182,7 +182,7 @@ void draw() {
     noStroke();
     fill(140);
     rect(0, 0, width, height);
-    reset.position(40, 760);
+    reset.position(width/20, height/1.05263158);
     if (customCol.activated) {
       for (int i = 0; i<bgc1.length; i++) {
         bgc1[i].position(width/1.6, height/3.2+i*50);
@@ -195,15 +195,15 @@ void draw() {
     textFont(font, 40+10);
     text("GLITCH PIX", width/2.7586-20, height/17.77);
     textFont(font, 20);
-    text("Custom Background Lerp", width/1.6, height/4);
-    text("Trigonometry Spacing", width/40, height/3.2);
-    text("Slanted Trigonometry", width/40, height/4);
-    text("Trigonometry Amplitude Range", width/40, 300);
+    text("Custom Background Lerp ->", width/1.6, height/4);
+    text("Trigonometry Spacing ->", width/40, height/3.2);
+    text("Slanted Trigonometry ->", width/40, height/4);
+    text("Trigonometry Amplitude Range", width/40, height/2.6);
     text("Size Selector Range", width/40, height/2.051282051282051);
-    text("Size Selector Speed", width/40, height/1.6);
+    text("Size Selector Speed ->", width/40, height/1.6);
     text("Color Selector Range", width/40, height/1.4814814814814814);
-    text("Color Selector Speed", width/40, height/1.2698412698412698);
-    text("WD TEXT (LEAVE BLANK FOR RANDOM)", width/40, 680);
+    text("Color Selector Speed ->", width/40, height/1.2698412698412698);
+    text("WD TEXT (LEAVE BLANK FOR RANDOM)", width/40, height/1.17647059);
     wd.position(width/40, height/1.1594202898550725);
     trigAmp1.position(width/40, height/2.5806451612903225);
     trigAmp2.position(width/4, height/2.5806451612903225);
@@ -449,7 +449,7 @@ void draw() {
         save.position(width/1.03835324, height/(14.54/12.5));
       }
       //fast undo and fast redo
-      if (mousePressed) {       
+      if (mousePressed) {
         undo.activate();
         redo.activate();
       }
@@ -508,6 +508,11 @@ void keyHandler(ColorArea area) {
 void numberTyping(NumberArea area) {
   if (collision(area.pos, area.w, area.h)) {
     if (keyPressed) {
+      if (area.init==true) {
+        area.init = false;
+        area.text="";
+      }
+
       if (area.text.length()>9) {
         if (key==unhex("0008")) {
           if (area.increment>0) {
