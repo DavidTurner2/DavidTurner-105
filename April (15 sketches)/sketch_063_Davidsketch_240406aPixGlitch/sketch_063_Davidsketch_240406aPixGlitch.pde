@@ -1,4 +1,20 @@
-//drawing object
+//import sound library
+import processing.sound.*;
+//create soundfile variables
+SoundFile drawing;
+SoundFile glitching;
+SoundFile undoing;
+SoundFile redoing;
+SoundFile plot;
+SoundFile eplot;
+SoundFile trigPlot;
+SoundFile button;
+SoundFile secr;
+SoundFile vanish;
+SoundFile export;
+
+
+
 Draw p = new Draw();
 //pvector for mouse selctor
 PVector sel = new PVector(0, 0);
@@ -7,21 +23,25 @@ Button erase = new Button("clear");
 Button eraser = new Button("eraser");
 Button normal = new Button("normal");
 Button glitch = new Button("glitch");
+Button glitch2 = new Button("glitch2");
 Button tangent = new Button("tangent");
 Button rectangle = new Button("rect");
 Button ellipse = new Button("ellipse");
 Button undo = new Button("undo");
 Button redo = new Button("redo");
 Button sine = new Button("sine");
+Button vsine = new Button("v.sine");
+Button vtangent = new Button("v.tan");
+
 Button WD = new Button("WD");
 Button save = new Button("Save\nas\nPNG");
-MenuButton slant = new MenuButton();
-
+MenuButton col = new MenuButton("BG\nColor");
 //create selector objects that change color/size
 Selector cs = new Selector(width/1.03, height/14.81, "color");
 Selector ss = new Selector(width/1.03, height/2.5, "size");
-
+//secret button
 PVector secret;
+//secret button width and height
 float secretw;
 float secreth;
 
@@ -30,6 +50,8 @@ boolean saving = false;
 PImage wingDing;
 PImage pencil;
 PImage pencil2;
+//variable to check if started drawing
+boolean startedDrawing = false;
 //varibale to check if to stop drawing
 boolean stop = false;
 //regular text font
@@ -47,8 +69,6 @@ float amplitude = random(10, 30);
 PVector sinePos = new PVector(0, 0);
 //length of sine and tangent
 int lengthOfSine = 100;
-//spacing for sine and tangent
-int sineSpace = 1;
 //offset for sine and tangent
 float sineOffset = 0;
 //length of rectanfgle
@@ -56,30 +76,49 @@ float wide = 100;
 //height of rectangle
 float high = 100;
 boolean adjust = false;
-//value for allowing sine and recatangles to be released on right most border
+//value for allowing sine and tangent to be released on right most border
 boolean pass = false;
-boolean menu = true;
-//secret menu variables
-//if slanted
-boolean slanted = false;
-boolean vertical = false;
-boolean appendbgc = false;
-boolean lerpBgc = true;
+//pass vertical s n t borttom
+boolean pass2 = false;
+boolean secretPlayed= false;
+boolean menu = false;
 float lerp = 0;
-int ampRange1 = 10;
-int ampRange2 = 30;
-float csSpeed = 50.049;
-float ssSpeed = 50.049;
-int colorRange1 = 0;
-int colorRange2 = 255;
-int sizeRange1 = 4;
-int sizeRange2 = 40;
+//secret menu buttons and areas variables
+MenuButton hide = new MenuButton("Hide UI And Borders");
+MenuButton slant = new MenuButton("");
+MenuButton customCol = new MenuButton("");
+NumberArea lerpSpeed = new NumberArea(0.01);
+NumberArea trigSpace = new NumberArea(1);
+NumberArea trigAmp1 = new NumberArea(10);
+NumberArea trigAmp2 = new NumberArea(30);
+NumberArea sizeRange1 = new NumberArea(4);
+NumberArea sizeRange2 = new NumberArea(40);
+NumberArea colorRange1 = new NumberArea(0);
+NumberArea colorRange2 = new NumberArea(255);
+NumberArea csSpeed = new NumberArea(50.049);
+NumberArea ssSpeed = new NumberArea(50.049);
+TextArea wd = new TextArea("");
+Button reset = new Button("default");
 
+ColorArea bgc1[] = {new ColorArea("FF0000"), new ColorArea("00FF00"), new ColorArea("550000"),
+  new ColorArea("FFFFFF"), new ColorArea("222222")};
 
-//bgclerping
-color[] bgcLerp ={#ff0000, #00ff00, #660000, #ffffff, #000000};
 //code runs at setup
 void setup() {
+  eplot= new SoundFile(this, "ball.wav");
+  export = new SoundFile(this,"save.wav");
+  drawing= new SoundFile(this, "drawn.wav");
+  glitching= new SoundFile(this, "glitchy.wav");
+  undoing= new SoundFile(this, "spin.wav");
+  redoing= new SoundFile(this, "redoing.wav");
+  plot= new SoundFile(this, "plot.wav");
+  trigPlot= new SoundFile(this, "musicplace.wav");
+  button= new SoundFile(this, "buttonPress.wav");
+  secr= new SoundFile(this, "secret.wav");
+  vanish= new SoundFile(this, "vae.wav");
+
+
+
   //load images
   wingDing = loadImage("WD.png");
   pencil = loadImage("Pencil.png");
@@ -102,47 +141,82 @@ void draw() {
   secretw = width/2.37;
   secreth = height/6.8;
   //setting wing dings
-  wing = p.abc[int(random(p.abc.length-1))];
+  if (wd.text=="") {
+    wing = p.abc[int(random(p.abc.length))];
+  } else {
+    wing = wd.text;
+  }
   //setting amplitudes
   if (frameCount%15==0&&adjust==false) {
-    amplitude = random(10, 30);
+    amplitude = random(trigAmp1.value, trigAmp2.value);
   }
   //set selector to mouse x and mouse y
   sel.set(mouseX, mouseY);
   //set bgc to variable
-  if (lerpBgc) {
-    lerp+=0.01;
+  if (customCol.activated) {
+    lerp+=lerpSpeed.value;
     if (lerp<1) {
-      bgc = lerpColor(bgcLerp[0], bgcLerp[1], lerp);
+      bgc = lerpColor(bgc1[0].col, bgc1[1].col, lerp);
     } else if (lerp>1&&lerp<2) {
-      bgc = lerpColor(bgcLerp[1], bgcLerp[2], map(lerp, 1, 2, 0, 1));
+      bgc = lerpColor(bgc1[1].col, bgc1[2].col, map(lerp, 1, 2, 0, 1));
     } else if (lerp>2&&lerp<3) {
-      bgc = lerpColor(bgcLerp[2], bgcLerp[3], map(lerp, 2, 3, 0, 1));
+      bgc = lerpColor(bgc1[2].col, bgc1[3].col, map(lerp, 2, 3, 0, 1));
     } else if (lerp>3&&lerp<4) {
-      bgc = lerpColor(bgcLerp[3], bgcLerp[4], map(lerp, 3, 4, 0, 1));
-    }else if (lerp>4&&lerp<5){
-      bgc = lerpColor(bgcLerp[4], bgcLerp[0], map(lerp, 4, 5, 0, 1));
-    }else{
+      bgc = lerpColor(bgc1[3].col, bgc1[4].col, map(lerp, 3, 4, 0, 1));
+    } else if (lerp>4&&lerp<5) {
+      bgc = lerpColor(bgc1[4].col, bgc1[0].col, map(lerp, 4, 5, 0, 1));
+    } else {
       lerp = 0;
     }
   } else {
     bgc = color(255, 100*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
   }
+  //append bgc if bg color button is active
+  if (col.activated) {
+    c = bgc;
+  }
   //set bgc to bgc variable
   background(bgc);
   if (menu) {
+    stop = true;
     noStroke();
-    fill(240);
+    fill(140);
     rect(0, 0, width, height);
+    reset.position(40, 760);
+    if (customCol.activated) {
+      for (int i = 0; i<bgc1.length; i++) {
+        bgc1[i].position(width/1.6, height/3.2+i*50);
+      }
+      lerpSpeed.position(width/1.2903225806451613, height/4);
+      textFont(font, 20);
+      text("Lerp Speed", width/1.6, height/3.5782608695652173);
+    }
     fill(0);
     textFont(font, 40+10);
     text("GLITCH PIX", width/2.7586-20, height/17.77);
     textFont(font, 20);
-    text("Background", 400, 300);
-    text("color=bgc", 200, 400);
-    text("vertical sine", 100, 350);
-    text("slanted trigonometry", 100, 300);
-    slant.position(100, 330, slanted);
+    text("Custom Background Lerp", width/1.6, height/4);
+    text("Trigonometry Spacing", width/40, height/3.2);
+    text("Slanted Trigonometry", width/40, height/4);
+    text("Trigonometry Amplitude Range", width/40, 300);
+    text("Size Selector Range", width/40, height/2.051282051282051);
+    text("Size Selector Speed", width/40, height/1.6);
+    text("Color Selector Range", width/40, height/1.4814814814814814);
+    text("Color Selector Speed", width/40, height/1.2698412698412698);
+    text("WD TEXT (LEAVE BLANK FOR RANDOM)", width/40, 680);
+    wd.position(width/40, height/1.1594202898550725);
+    trigAmp1.position(width/40, height/2.5806451612903225);
+    trigAmp2.position(width/4, height/2.5806451612903225);
+    sizeRange1.position(width/40, height/2);
+    sizeRange2.position(width/4, height/2);
+    colorRange1.position(width/40, height/1.4545454545454546);
+    colorRange2.position(width/4, height/1.4545454545454546);
+    csSpeed.position(width/3.076923076923077, height/1.322314049586777);
+    ssSpeed.position(width/3.2, height/1.7582417582417582);
+    trigSpace.position(width/3.076923076923077, height/3.5555555555555554);
+    slant.position(width/2.96296296296, height/4.2105263157894735);
+    customCol.position(width/1.0389610389610389, height/4.2105263157894735);
+    hide.position(width/5.714285714285714, height/1.0526315789473684);
   } else {
     //save as png by getting rid of borders and buttons and cursors and just show the drawing
     if (saving) {
@@ -180,11 +254,13 @@ void draw() {
         //show image of pencil
         image(pencil, sel.x-10, sel.y-40, 50, 50);
       }
-      if (p.mode=="glitch") {
+      //glitch cursors
+      if (p.mode=="glitch"||p.mode=="glitch2") {
         //show image of pencil
         tint(map(sin(frameCount/49.009), -1, 1, 100, 255), map(cos(frameCount/59.009), -1, 1, 100, 255), map(cos(1-frameCount/29.009), -1, 1, 100, 255), map(sin(frameCount/10.009), -1, 1, 200, 255));
         image(pencil2, sel.x-10, sel.y-40, 50, 50);
       }
+      //eraser cursor
       if (p.mode=="eraser") {
         //show red square as eraser
         rectMode(CENTER);
@@ -193,6 +269,7 @@ void draw() {
         fill(255, 0, 0);
         square(sel.x, sel.y, s);
       }
+      //wing ding cursor
       if (p.mode=="WD") {
         image(wingDing, sel.x-10, sel.y-40, 50, 50);
       }
@@ -204,18 +281,18 @@ void draw() {
           lengthOfSine = int(map(constrain(sel.x, sinePos.x, sinePos.x+width), sinePos.x, sinePos.x+width, 5, width));
           if (p.mode=="sine") {
             for (int i = 0; i<lengthOfSine; i++) {
-              if (slanted) {
-                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*sin(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10));
+              if (slant.activated) {
+                point(sinePos.x+i*trigSpace.value, sinePos.y+amplitude*sin(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10));
               } else {
-                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*sin(i/9.009+sineOffset));
+                point(sinePos.x+i*trigSpace.value, sinePos.y+amplitude*sin(i/9.009+sineOffset));
               }
             }
           } else {
             for (int i = 0; i<lengthOfSine; i++) {
-              if (slanted) {
-                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*tan(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10));
+              if (slant.activated) {
+                point(sinePos.x+i*trigSpace.value, sinePos.y+amplitude*tan(i/9.009+sineOffset)+i*map(sel.y, sinePos.y, sinePos.y+height, 1, 10));
               } else {
-                point(sinePos.x+i*sineSpace, sinePos.y+amplitude*tan(i/9.009+sineOffset));
+                point(sinePos.x+i*trigSpace.value, sinePos.y+amplitude*tan(i/9.009+sineOffset));
               }
             }
           }
@@ -224,12 +301,50 @@ void draw() {
           if (p.mode=="sine") {
             for (int i = 0; i<lengthOfSine; i++) {
               sinePos.set(mouseX, mouseY);
-              point(mouseX+i*sineSpace, mouseY+amplitude*sin(i/9.009+sineOffset));
+              point(mouseX+i*trigSpace.value, mouseY+amplitude*sin(i/9.009+sineOffset));
             }
           } else {
             for (int i = 0; i<lengthOfSine; i++) {
               sinePos.set(mouseX, mouseY);
-              point(mouseX+i*sineSpace, mouseY+amplitude*tan(i/9.009+sineOffset));
+              point(mouseX+i*trigSpace.value, mouseY+amplitude*tan(i/9.009+sineOffset));
+            }
+          }
+        }
+      }
+      //cursor for vertical sine tangent
+      if (p.mode=="v.sine"||p.mode=="v.tan") {
+        stroke(c);
+        strokeWeight(s);
+        if (adjust) {
+          lengthOfSine = int(map(constrain(sel.y, sinePos.y, sinePos.y+height), sinePos.y, sinePos.y+height, 5, height));
+          if (p.mode=="v.sine") {
+            for (int i = 0; i<lengthOfSine; i++) {
+              if (slant.activated) {
+                point(sinePos.x+amplitude*sin(i/9.009+sineOffset)+i*map(sel.x, sinePos.x, sinePos.x+width, 1, 10), sinePos.y+i*trigSpace.value);
+              } else {
+                point(sinePos.x+amplitude*sin(i/9.009+sineOffset), sinePos.y+i*trigSpace.value);
+              }
+            }
+          } else {
+            for (int i = 0; i<lengthOfSine; i++) {
+              if (slant.activated) {
+                point(sinePos.x+amplitude*tan(i/9.009+sineOffset)+i*map(sel.x, sinePos.x, sinePos.x+width, 1, 10), sinePos.y+i*trigSpace.value);
+              } else {
+                point(sinePos.x+amplitude*tan(i/9.009+sineOffset), sinePos.y+i*trigSpace.value);
+              }
+            }
+          }
+        } else {
+          sineOffset+=0.075;
+          if (p.mode=="v.sine") {
+            for (int i = 0; i<lengthOfSine; i++) {
+              sinePos.set(mouseX, mouseY);
+              point(mouseX+amplitude*sin(i/9.009+sineOffset), mouseY+i*trigSpace.value);
+            }
+          } else {
+            for (int i = 0; i<lengthOfSine; i++) {
+              sinePos.set(mouseX, mouseY);
+              point(mouseX+amplitude*tan(i/9.009+sineOffset), mouseY+i*trigSpace.value);
             }
           }
         }
@@ -274,10 +389,12 @@ void draw() {
       float r4w = 9202;
       float r4h = 120;
       //borders
-      rect(r1.x, r1.y, r1w, r1h);
-      rect(r2.x, r2.y, r2w, r2h);
-      rect(r3.x, r3.y, r3w, r3h);
-      rect(r4.x, r4.y, r4w, r4h);
+      if (hide.activated==false) {
+        rect(r1.x, r1.y, r1w, r1h);
+        rect(r2.x, r2.y, r2w, r2h);
+        rect(r3.x, r3.y, r3w, r3h);
+        rect(r4.x, r4.y, r4w, r4h);
+      }
       //check if collided with borders set stop to true if collided with border
       //also check if not in bounds
       if (collision(r1, r1w, r1h)||collision(r2, r2w, r2h)
@@ -289,140 +406,164 @@ void draw() {
       }
       //let sine be passed on the right border
       pass = collision(r2, r2w, r2h);
-
+      //vertical sine bottom border
+      pass2 =collision(r4, r4w, r4h);
       //text
-      fill(255, 200*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
+      if (hide.activated==false) {
+
+        fill(255, 200*(1/sin(frameCount/189.09)), 100*(1/cos(frameCount/189.09)));
+      } else {
+        fill(bgc);
+      }
       textFont(font, 40+20*abs(sin(5 *frameCount/99.09)));
       text("GLITCH PIX", width/2.7586+20*-abs(sin(5*frameCount/99.09)), height/17.77);
 
       ellipseMode(CENTER);
       //display color selector and size selector objects
-      cs.display(width/1.03, height/14.81);
-      ss.display(width/1.03, height/2.5);
-      popMatrix();
-      //put button objects at positions
-      WD.position(width/40, height/14.54);
-      ellipse.position(width/40, height/(14.54/2.3));
-      rectangle.position(width/40, height/(14.54/3.5));
-      sine.position(width/40, height/(14.54/4.7));
-      normal.position(width/40, height/(14.54/6));
-      tangent.position(width/40, height/(14.54/7.2));
-      glitch.position(width/40, height/(14.54/8.5));
-      eraser.position(width/40, height/(14.54/10));
-      undo.position(width/40, height/(14.54/11.5));
-      erase.position(width/40, height/(14.54/13));
-      save.position(width/1.03435324, height/(14.54/11.5));
+      if (hide.activated==false) {
 
-      if (mousePressed) {
+        if (col.activated==false) {
+          cs.display(width/1.03, height/14.81);
+        }
+        ss.display(width/1.03, height/2.5);
+      }
+      popMatrix();
+      //put button objects at positions if not hidden
+      if (hide.activated==false) {
+        WD.position(width/40, height/14.54);
+        ellipse.position(width/40, height/(14.54/1.9));
+        rectangle.position(width/40, height/(14.54/2.9));
+        vtangent.position(width/40, height/(14.54/3.8));
+        sine.position(width/40, height/(14.54/4.7));
+        vsine.position(width/40, height/(14.54/5.6));
+        normal.position(width/40, height/(14.54/6.4));
+        tangent.position(width/40, height/(14.54/7.2));
+        glitch.position(width/40, height/(14.54/8.1));
+        glitch2.position(width/40, height/(14.54/9.11));
+        eraser.position(width/40, height/(14.54/10));
+        undo.position(width/40, height/(14.54/11.01));
+        redo.position(width/40, height/(14.54/12.01));
+        erase.position(width/40, height/(14.54/13));
+        //buttons on the right side
+        col.position(width/1.03835324, height/(14.54/11.0));
+        save.position(width/1.03835324, height/(14.54/12.5));
+      }
+      //fast undo and fast redo
+      if (mousePressed) {       
         undo.activate();
+        redo.activate();
       }
     }
   }
 }
 
-//code runs when mouse is clicked
-void mouseClicked() {
-  //activate clicking events on buttons and selectors
-  cs.changeColor();
-  ss.changeColor();
-  erase.activate();
-  eraser.activate();
-  normal.activate();
-  glitch.activate();
-  rectangle.activate();
-  ellipse.activate();
-  WD.activate();
-  tangent.activate();
-  sine.activate();
-  save.activate();
-  if (collision(secret, secretw, secreth)) {
-    menu=!menu;
-  }
-
-  if (slant.selected) {
-    slanted=!slanted;
-  }
-}
-//code runs when mouse is dragged
-void mouseDragged() {
-  //draw only when dragged for glitch
-  if (p.mode=="glitch"&&stop==false) {
-    p.draw = true;
-  }
-  //if selectors are selected and dragged
-  if (cs.selected==true) {
-    cs.dragging = true;
-  }
-  if (ss.selected==true) {
-    ss.dragging = true;
-  }
-  //if mode requires adjustments
-  if ((p.mode=="sine"||p.mode=="tangent"||p.mode=="rect"||p.mode=="ellipse")&&stop==false) {
-    adjust=true;
-  }
-}
-//code runs when mouse is pressed
-void mousePressed() {
-  if (!(p.mode=="glitch")&&stop==false) {
-    p.draw = true;
-  }
-  if ((p.mode=="normal"||p.mode=="glitch"|| p.mode=="eraser")&&stop==false) {
-    p.undo();
-  }
-}
-//code runs when mouse is released
-void mouseReleased() {
-  //fixing any index errors
-
-  //releasing rectangle
-  if (p.mode=="rect"&&stop==false) {
-    p.rectangle(c, s, sinePos, wide, high);
-  }
-  //releasing ellipse
-  if (p.mode=="ellipse"&&stop==false) {
-    p.ell(c, s, sinePos, wide, high);
-  }
-  //releasing sine waves
-  if ((p.mode=="sine"||p.mode=="tangent")&&stop==false) {
-    p.trig(c, s, sinePos, amplitude, lengthOfSine, sineSpace, sineOffset);
-  } else if ((p.mode=="sine"||p.mode=="tangent")&&pass==true) {
-    //let you release if colliding on the right most border
-    p.trig(c, s, sinePos, amplitude, lengthOfSine, sineSpace, sineOffset);
-  }
-  //placing wingdings
-  if (p.mode=="WD") {
-    p.wd(c, map(s, 4, 40, 40, 80), sel);
-  }
-  //stop adjusting
-  adjust=false;
-  //make everything false
-  stop = false;
-  p.draw = false;
-  p.fix();
-  cs.dragging = false;
-  ss.dragging = false;
-}
-//code runs when key is pressed
-void keyPressed() {
-  //println(int("123")+int("10"));
-  if (key==unhex("0008")) {
-    println("delete on mac");
-  }
-  //undo on z
-  if (key =='z'||key=='Z') {
-    p.undo();
-  }
-  //also undo on x
-  if (key =='x'||key=='X') {
-    p.undo();
-  }
-}
 
 //collision function returns true if colloding returns false if not colliding
-Boolean collision(PVector a, float wide, float high) {
+boolean collision(PVector a, float wide, float high) {
   if (sel.x>a.x&&sel.x<a.x+wide&&sel.y>a.y&&sel.y<a.y+high) {
     return true;
   } else {
     return false;
+  }
+}
+//functionn for typing in hex codes in number area
+void keyHandler(ColorArea area) {
+  if (collision(area.pos, area.w, area.h)) {
+    if (keyPressed) {
+      if (area.text.length()==6) {
+        if (key==unhex("0008")) {
+          if (area.increment>0) {
+            area.increment--;
+            area.text = area.saved[area.increment];
+          }
+        } else {
+          area.text="";
+          area.increment = 0;
+        }
+      } else {
+
+        if (key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'
+          ||key=='9'||key=='0') {
+          area.text+=key;
+          area.increment++;
+          area.saved[area.increment]=area.text;
+        }
+        if (key=='a'||key=='A'||key=='b'||key=='B'||key=='c'||key=='C'||key=='d'||key=='D'||key=='e'||key=='E'||key=='f'||key=='F') {
+          area.text+=(""+key).toUpperCase();
+          area.increment++;
+          area.saved[area.increment]=area.text;
+        }
+        if (key==unhex("0008")) {
+          if (area.increment>0) {
+            area.increment--;
+            area.text = area.saved[area.increment];
+          }
+        }
+      }
+    }
+  }
+}
+
+//function for typing in numbers in number area
+void numberTyping(NumberArea area) {
+  if (collision(area.pos, area.w, area.h)) {
+    if (keyPressed) {
+      if (area.text.length()>9) {
+        if (key==unhex("0008")) {
+          if (area.increment>0) {
+            area.increment--;
+            area.text = area.saved[area.increment];
+          }
+        } else {
+          area.text="";
+          area.increment = 0;
+        }
+      } else {
+
+        if (key=='1'||key=='2'||key=='3'||key=='4'||key=='5'||key=='6'||key=='7'||key=='8'
+          ||key=='9'||key=='0'||key=='.') {
+          area.text+=key;
+          area.increment++;
+          area.saved[area.increment]=area.text;
+        }
+        if (key==unhex("0008")) {
+          if (area.increment>0) {
+            area.increment--;
+            area.text = area.saved[area.increment];
+          }
+        }
+      }
+    }
+  }
+}
+
+void textTyping(TextArea area) {
+  if (collision(area.pos, area.w, area.h)) {
+    if (keyPressed) {
+      if (area.text.length()>9) {
+        if (key==unhex("0008")) {
+          if (area.increment>0) {
+            area.increment--;
+            area.text = area.saved[area.increment];
+          }
+        } else {
+          area.text="";
+          area.increment = 0;
+        }
+      } else {
+
+
+        if (key==unhex("0008")) {
+          if (area.increment>0) {
+            area.increment--;
+            area.text = area.saved[area.increment];
+          }
+        } else {
+          area.text+=key;
+          area.increment++;
+          area.saved[area.increment]=area.text;
+        }
+      }
+    }
   }
 }
