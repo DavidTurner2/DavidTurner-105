@@ -237,6 +237,9 @@ class Draw {
     line2.clear();
     lineColor.clear();
     lineSize.clear();
+    f = false;
+    f2 = true;
+    f3 = true;
   }
 
   //remove from order by type and decrease incrementor
