@@ -26,20 +26,25 @@ void setup() {
   // location of where the data folder is
   f = new File(dataPath(""));
   //button = new SoundFile(this,"button.wav");
-  for (int i = 0; i < f.list().length; i++) {
-    if (i<16) {
+
+  if (f.list().length>16) {
+    for (int i = 0; i < 16; i++) {
+      stems[i] = new SoundFile(this, f.list()[i]);
+    }
+  } else {
+    for (int i = 0; i < f.list().length; i++) {
       stems[i] = new SoundFile(this, f.list()[i]);
     }
   }
   for (int j = 0; j<16; j++) {
-    for (int i = 0; i<f.list().length; i++) {
+    for (int i = 0; i<16; i++) {
       int a = int(random(2));
       random [i][j] =a;
       if (a==0) {
         check++;
       }
       if (check==f.list().length-2) {
-        random[int(random(f.list().length))][j]=1;
+        random[int(random(16))][j]=1;
         check = 0;
       }
     }
@@ -48,7 +53,7 @@ void setup() {
 
 void draw() {
   if (timer>0) {
-    timer-=0.4;
+    timer-=0.2;
   } else {
 
     //set selecector value
@@ -91,8 +96,10 @@ void draw() {
     }
     //file names and durations
     for (int i = 0; i<f.list().length; i++) {
-      text(f.list()[i], 7, 51+i*23);
-      text(stems[i].duration(), 350, 51+i*23);
+      if (i<stems.length) {
+        text(f.list()[i], 7, 51+i*23);
+        text(stems[i].duration(), 350, 51+i*23);
+      }
     }
     //playlist
     pushMatrix();
@@ -102,42 +109,46 @@ void draw() {
       map(sin(frameCount/39.009), -1, 1, 190, 255));
     rect(0, 510-80, 1200, 450);
     //translate with move value
-    translate(move, -80);
+    translate(move/int(barRepeat.value), -80);
 
     //set rectangles of stems based on if on [1] or off [0] from random array of arrays
     for (int j = 0; j<16; j++) {
       for (int i = 0; i<f.list().length; i++) {
-        if (random[i][j]==1) {
-          fill(255);
-          rect(7+j*120, 519+i*21, 118, 21);
-          fill(100);
-          textSize(10);
-          text(f.list()[i], 7+j*120, 529+i*21);
+        if (i<16) {
+          if (random[i][j]==1) {
+            fill(255);
+            rect(7+j*120, 519+i*21, 118, 21);
+            fill(100);
+            textSize(10);
+            text(f.list()[i], 7+j*120, 529+i*21);
+          }
+          line(7, 519+i*21, 79000, 519+i*21);
+          line(7+j*120, 519, 7+j*120, 9988);
         }
-        line(7, 519+i*21, 79000, 519+i*21);
-        line(7+j*120, 519, 7+j*120, 9988);
       }
     }
     //play the stems and move circle mapping the duration and the current bar
     //increase bar to go up the array dimension
-    for (int i = 0; i<16; i++) {
-      if (bar<16) {
-      } else {
-        bar=0;
-        move=bar*-100;
-      }
-      if (random[i][bar/int(barRepeat.value)]==1) {
-        play();
-
-        if (!(stems[i].isPlaying())) {
-          if (bar<16) {
-            bar++;
-            move=bar*-100;
-
-            playing = true;
-          }
+    for (int i = 0; i<f.list().length; i++) {
+      if (i<16) {
+        if (bar<16) {
+        } else {
+          bar=0;
+          move=bar*-100;
         }
-        circle(map(stems[i].position(), 0, stems[i].duration(), 7+bar/int(barRepeat.value)*120, 127+bar/int(barRepeat.value)*120), 500, 30);
+        if (random[i][bar/int(barRepeat.value)]==1) {
+          play();
+
+          if (!(stems[i].isPlaying())) {
+            if (bar<16) {
+              bar++;
+              move=bar*-100;
+
+              playing = true;
+            }
+          }
+          circle(map(stems[i].position(), 0, stems[i].duration(), 7+bar/int(barRepeat.value)*120, 127+bar/int(barRepeat.value)*120), 500, 30);
+        }
       }
     }
     popMatrix();
@@ -146,9 +157,11 @@ void draw() {
 //seperate function for playing because im doing something else when the audio.isPlaying is false
 void play() {
   if (playing) {
-    for (int i = 0; i<stems.length; i++) {
-      if (random[i][bar/int(barRepeat.value)]==1) {
-        stems[i].play(speed.value);
+    for (int i = 0; i<f.list().length; i++) {
+      if (i<16) {
+        if (random[i][bar/int(barRepeat.value)]==1) {
+          stems[i].play(speed.value);
+        }
       }
     }
   }
@@ -167,15 +180,22 @@ void keyPressed() {
     playing = true;
 
     for (int j = 0; j<16; j++) {
-      for (int i = 0; i<f.list().length; i++) {
+      for (int i = 0; i<stems.length; i++) {
         int a = int(random(2));
         random [i][j] =a;
         if (a==0) {
           check++;
         }
-        if (check==f.list().length-2) {
-          random[int(random(f.list().length))][j]=1;
-          check = 0;
+        if (f.list().length>16) {
+          if (check==16-2) {
+            random[int(random(16))][j]=1;
+            check = 0;
+          }
+        } else {
+          if (check==f.list().length-2) {
+            random[int(random(f.list().length))][j]=1;
+            check = 0;
+          }
         }
       }
     }
@@ -203,14 +223,19 @@ void keyPressed() {
 }
 //go back a bar but not over boundaries
 void goBack() {
+  //stop songs
   stopStems();
+  //make sure songs are stopped
   if (bar>0) {
     for (int i = 0; i<int(barRepeat.value); i++) {
       bar--;
     }
+    //variable for my play function to activate
     playing = true;
   } else {
-    bar++;
+    for (int i = 0; i<int(barRepeat.value); i++) {
+      bar++;
+    }
     bar=0;
     playing = true;
   }
@@ -225,16 +250,20 @@ void goForward() {
     }
     playing = true;
   } else {
-    bar--;
+    for (int i = 0; i<int(barRepeat.value); i++) {
+      bar--;
+    }
     bar=15;
     playing = true;
   }
 }
 //stop the stems that are activated
 void stopStems() {
-  for (int i = 0; i<stems.length; i++) {
-    if (random[i][bar/int(barRepeat.value)]==1) {
-      stems[i].stop();
+  for (int i = 0; i<f.list().length; i++) {
+    if (i<16) {
+      if (random[i][bar/int(barRepeat.value)]==1) {
+        stems[i].stop();
+      }
     }
   }
 }
@@ -253,6 +282,8 @@ void numberTyping(NumberArea area) {
           if (area.increment>0) {
             area.increment--;
             area.text = area.saved[area.increment];
+            stopStems();
+            playing = true;
           }
         } else {
           area.text="";
@@ -288,6 +319,8 @@ void numberIntTyping(NumberArea area) {
       if (area.init==true) {
         area.init = false;
         area.text="";
+        stopStems();
+        playing = true;
       }
 
       if (area.text.length()>9) {
