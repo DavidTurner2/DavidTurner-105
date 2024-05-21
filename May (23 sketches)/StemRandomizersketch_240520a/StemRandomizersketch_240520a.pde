@@ -16,9 +16,10 @@ int bar = 0;
 boolean playing = true;
 NumberArea speed = new NumberArea(1);
 NumberArea barRepeat = new NumberArea(1);
-float timer = 10;
+//number for limiting to 16 or less
+int numb = 0;
 
-void setup() {
+void settings() {
   size(800, 800);
 
   // this is the important part:
@@ -28,10 +29,13 @@ void setup() {
   //button = new SoundFile(this,"button.wav");
 
   if (f.list().length>16) {
+    //save this number
+    numb = 16;
     for (int i = 0; i < 16; i++) {
       stems[i] = new SoundFile(this, f.list()[i]);
     }
   } else {
+    numb =f.list().length;
     for (int i = 0; i < f.list().length; i++) {
       stems[i] = new SoundFile(this, f.list()[i]);
     }
@@ -52,107 +56,104 @@ void setup() {
 }
 
 void draw() {
-  if (timer>0) {
-    timer-=0.2;
-  } else {
 
-    //set selecector value
-    sel.set(mouseX, mouseY);
-    //moving playlist
-    if (mouseX<150 && (mouseY>520-80)) {
-      //dont move if it goes out of bounds
-      if (move<0) {
-        move+=7.232;
-      }
-    } else if (mouseX>650 && (mouseY>520-80)) {
-      //dont move if it goes out of bounds
-      if (move>-1400) {
-        move-=7.232;
-      }
+  //set selecector value
+  sel.set(mouseX, mouseY);
+  //moving playlist
+  if (mouseX<150 && (mouseY>520-80)) {
+    //dont move if it goes out of bounds
+    if (move<0) {
+      move+=7.232;
     }
+  } else if (mouseX>650 && (mouseY>520-80)) {
+    //dont move if it goes out of bounds
+    if (move>-1400) {
+      move-=7.232;
+    }
+  }
+  //set background to black
+  background(0);
+  fill(200);
+  rect(0, 7, 440, 394);
+  //labels
+  textSize(20);
+  fill(255);
+  //hint text
+  text("press R to Randomize\nArrow keys or A and D to change bars", 470, 400);
+  text("Speed", 500, 90);
+  text("Repeat Bars", 500, 190);
+  //buttons for controlling the speed and how many times to repeat bars
+  speed.position(500, 100);
+  barRepeat.position(500, 200);
 
-    background(0);
-    fill(200);
-    rect(0, 7, 440, 394);
-    //labels
-    textSize(20);
-    fill(255);
-    //hint text
-    text("press R to Randomize\nArrow keys or A and D to change bars", 470, 400);
-    text("Speed", 500, 90);
-    text("Repeat Bars", 500, 190);
-    //buttons for controlling the speed and how many times to repeat bars
-    speed.position(500, 100);
-    barRepeat.position(500, 200);
+  fill(1);
+  textSize(16);
+  stroke(0);
+  //displaying files names
+  text("|File Name|------------------------------|Lengths Need To Be The Same|", 5, 51-25);
+  //row lines
+  for (int i = 0; i<17; i++) {
+    line(0, 29+i*23, 470, 29+i*23);
+  }
+  //file names and durations
+  for (int i = 0; i<f.list().length; i++) {
+    if (i<16) {
+      text(f.list()[i], 7, 51+i*23);
+      text(stems[i].duration(), 350, 51+i*23);
+    }
+  }
+  //playlist
+  pushMatrix();
+  //changing colros
+  fill(map(sin(frameCount/42.009), -1, 1, 170, 220),
+    map(sin(frameCount/79.009), -1, 1, 170, 240),
+    map(sin(frameCount/39.009), -1, 1, 190, 255));
+  rect(0, 510-80, 1200, 450);
+  //translate with move value
+  translate(move, -80);
 
-    fill(1);
-    textSize(16);
-    stroke(0);
-    //displaying files names
-    text("|File Name|------------------------------|Lengths Need To Be The Same|", 5, 51-25);
-    //row lines
-    for (int i = 0; i<17; i++) {
-      line(0, 29+i*23, 470, 29+i*23);
-    }
-    //file names and durations
-    for (int i = 0; i<f.list().length; i++) {
-      if (i<stems.length) {
-        text(f.list()[i], 7, 51+i*23);
-        text(stems[i].duration(), 350, 51+i*23);
-      }
-    }
-    //playlist
-    pushMatrix();
-    //changing colros
-    fill(map(sin(frameCount/42.009), -1, 1, 170, 220),
-      map(sin(frameCount/79.009), -1, 1, 170, 240),
-      map(sin(frameCount/39.009), -1, 1, 190, 255));
-    rect(0, 510-80, 1200, 450);
-    //translate with move value
-    translate(move/int(barRepeat.value), -80);
-
-    //set rectangles of stems based on if on [1] or off [0] from random array of arrays
-    for (int j = 0; j<16; j++) {
-      for (int i = 0; i<f.list().length; i++) {
-        if (i<16) {
-          if (random[i][j]==1) {
-            fill(255);
-            rect(7+j*120, 519+i*21, 118, 21);
-            fill(100);
-            textSize(10);
-            text(f.list()[i], 7+j*120, 529+i*21);
-          }
-          line(7, 519+i*21, 79000, 519+i*21);
-          line(7+j*120, 519, 7+j*120, 9988);
-        }
-      }
-    }
-    //play the stems and move circle mapping the duration and the current bar
-    //increase bar to go up the array dimension
+  //set rectangles of stems based on if on [1] or off [0] from random array of arrays
+  for (int j = 0; j<16; j++) {
     for (int i = 0; i<f.list().length; i++) {
       if (i<16) {
-        if (bar<16) {
-        } else {
-          bar=0;
-          move=bar*-100;
+        if (random[i][j]==1) {
+          fill(255);
+          rect(7+j*120, 519+i*21, 118, 21);
+          fill(100);
+          textSize(10);
+          text(f.list()[i], 7+j*120, 529+i*21);
         }
-        if (random[i][bar/int(barRepeat.value)]==1) {
-          play();
-
-          if (!(stems[i].isPlaying())) {
-            if (bar<16) {
-              bar++;
-              move=bar*-100;
-
-              playing = true;
-            }
-          }
-          circle(map(stems[i].position(), 0, stems[i].duration(), 7+bar/int(barRepeat.value)*120, 127+bar/int(barRepeat.value)*120), 500, 30);
-        }
+        line(7, 519+i*21, 79000, 519+i*21);
+        line(7+j*120, 519, 7+j*120, 9988);
       }
     }
-    popMatrix();
   }
+  //play the stems and move circle mapping the duration and the current bar
+  //increase bar to go up the array dimension
+  for (int i = 0; i<f.list().length; i++) {
+    if (i<16) {
+      if (bar<16*int(barRepeat.value)) {
+      } else {
+        bar=0;
+        move=bar/int(barRepeat.value)*-100;
+      }
+      if (random[i][bar/int(barRepeat.value)]==1) {
+        play();
+
+        if (!(stems[i].isPlaying())) {
+          if (bar<16*int(barRepeat.value)) {
+            stopStems();
+            bar++;
+            move=bar/int(barRepeat.value)*-100;
+
+            playing = true;
+          }
+        }
+        circle(map(stems[i].position(), 0, stems[i].duration(), 7+bar/int(barRepeat.value)*120, 127+bar/int(barRepeat.value)*120), 500, 30);
+      }
+    }
+  }
+  popMatrix();
 }
 //seperate function for playing because im doing something else when the audio.isPlaying is false
 void play() {
@@ -175,7 +176,7 @@ void keyPressed() {
   if (key=='r'||key=='R') {
     stopStems();
     bar=0;
-    move=bar*-100;
+    move=bar/int(barRepeat.value)*-100;
 
     playing = true;
 
@@ -203,21 +204,21 @@ void keyPressed() {
   //direction keys
   if (key=='a'||key=='A') {
     goBack();
-    move=bar*-100;
+    move=bar/int(barRepeat.value)*-100;
   }
   if (key=='d'||key=='D') {
     goForward();
-    move=bar*-100;
+    move=bar/int(barRepeat.value)*-100;
   }
 
   if (key == CODED) {
     if (keyCode==LEFT) {
       goBack();
-      move=bar*-100;
+      move=bar/int(barRepeat.value)*-100;
     }
     if (keyCode==RIGHT) {
       goForward();
-      move=bar*-100;
+      move=bar/int(barRepeat.value)*-100;
     }
   }
 }
@@ -244,7 +245,7 @@ void goBack() {
 
 void goForward() {
   stopStems();
-  if (bar<16) {
+  if (bar<16*int(barRepeat.value)) {
     for (int i = 0; i<int(barRepeat.value); i++) {
       bar++;
     }
@@ -253,18 +254,15 @@ void goForward() {
     for (int i = 0; i<int(barRepeat.value); i++) {
       bar--;
     }
-    bar=15;
+    bar=15*int(barRepeat.value);
     playing = true;
   }
 }
 //stop the stems that are activated
 void stopStems() {
-  for (int i = 0; i<f.list().length; i++) {
-    if (i<16) {
-      if (random[i][bar/int(barRepeat.value)]==1) {
-        stems[i].stop();
-      }
-    }
+  for (int i = 0; i<numb; i++) {
+    // stems[i].play();
+    stems[i].stop();
   }
 }
 //function for typing in numbers in number area
