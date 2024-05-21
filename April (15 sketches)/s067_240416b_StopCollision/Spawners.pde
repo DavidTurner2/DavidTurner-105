@@ -2,7 +2,7 @@ class Spawners {
   //the pvector array for the spawners to go to
   PVector[] ls = new PVector[100];
   //the current enemyies spawned
-  float enemies = 2;
+  int enemies = 2;
   //array of float values that control the opacity and when they spawn in
   float[] spawn = new float[100];
   //arrays for how long it takes for spawner to appear fully
@@ -15,54 +15,12 @@ class Spawners {
   color[] c = new color[100];
 
   color[] colors = new color[12];
-  color prev;
   //when the circle goes out of bounds
   float out = 1738;
 
   Spawners() {
     //set lecel ad coles
-    for (int i = 0; i<12; i++) {
-      lvl[i]=true;
-      colors[i] = color(random(100, 255), random(100, 255), random(100, 255));
-    }
-
-    //set colors for each level with for loops
-    for (int i = 0; i<2; i++) {
-      c[i] =colors[0];
-    }
-    for (int i = 2; i<5; i++) {
-      c[i] =colors[1];
-    }
-    for (int i = 5; i<10; i++) {
-      c[i] =colors[2];
-    }
-    for (int j = 0; j<9; j++) {
-      for (int i = 10+j*10; i<20+j*10; i++) {
-        c[i] = colors[3+j];
-      }
-    }
-
-    //set random spawn times and set eveything to 0
-    for (int i = 0; i<100; i++) {
-      if (i<5) {
-        spawnTime[i] = random(0.87, 1.5);
-      }
-      if (i>=5&&i<=40) {
-        spawnTime[i] = random(0.1, 1.4);
-      }
-      if (i>40) {
-        spawnTime[i] = random(0.1, 0.7);
-      }
-
-      spawn[i] = 0;
-      counter[i] = 0;
-      //even goes on left odd goes on right side of screen
-      if (i%2==0) {
-        ls[i] = new PVector(random(350), random(800));
-      } else {
-        ls[i] = new PVector(random(450, 800), random(800));
-      }
-    }
+    restart();
   }
 
 
@@ -242,12 +200,17 @@ class Spawners {
       if (i%2==0) {
         if (spawn[i]>255) {
           counter[i]+=0.7234;
+          //play if not out of bounds
+          if (!expandLeft[i].isPlaying()&&counter[i]<out) {
+            expandLeft[i].play(random(0.7, 1.5));
+          }
           noStroke();
           fill(c[i]);
           //when you select around the center of a spawner it despawns the spawner
           if (sel.dist(ls[i])<20) {
             if (mousePressed) {
               despawn(i);
+              despawnLeft(i);
             }
             fill(255);
           }
@@ -261,6 +224,7 @@ class Spawners {
           if (sel.dist(ls[i])<20) {
             if (mousePressed) {
               despawn(i);
+              despawnLeft(i);
             }
             fill(255);
           }
@@ -269,12 +233,17 @@ class Spawners {
       } else {
         if (spawn[i]>255) {
           counter[i]+=0.7234;
+          //play if not out of bounds
+          if (!expandRight[i].isPlaying()&&counter[i]<out) {
+            expandRight[i].play(random(0.7, 1.5));
+          }
           noStroke();
           //color from array for spawner to be
           fill(c[i]);
           if (sel.dist(ls[i])<20) {
             if (mousePressed) {
               despawn(i);
+              despawnRight(i);
             }
             fill(255);
           }
@@ -288,6 +257,7 @@ class Spawners {
           if (sel.dist(ls[i])<20) {
             if (mousePressed) {
               despawn(i);
+              despawnRight(i);
             }
             fill(255);
           }
@@ -300,7 +270,12 @@ class Spawners {
             if (ls[i].dist(ls[j])<(counter[i]-9)/2+(counter[j]-9)/2) {
               // println("safe inside");
             } else {
-               println(1/0);
+              appear = 255;
+              score = enemies;
+              restart();
+              stopSounds();
+              start = false;
+              countdown = 100;
             }
           }
         }
@@ -309,8 +284,9 @@ class Spawners {
   }
   //set to random position and set counter 0 spawn 0
   void despawn(int i) {
-    println(lvl);
-
+    //println(lvl);
+    teleport.stop();
+    teleport.play(random(0.7, 1.5));
     spawn[i] = 0;
     counter[i] = 0;
     //even goes on left odd goes on right side
@@ -318,6 +294,70 @@ class Spawners {
       ls[i].set(random(350), random(800));
     } else {
       ls[i].set(random(450, 800), random(800));
+    }
+  }
+  //stop right audio
+  void despawnRight(int i) {
+    expandRight[i].stop();
+  }
+  //stop left aduio
+  void despawnLeft(int i) {
+    expandLeft[i].stop();
+  }
+  //stop all sounds
+  void stopSounds() {
+    for (int i = 0; i<expandRight.length; i++) {
+      expandRight[i].stop();
+      expandLeft[i].stop();
+    }
+    bgm.stop();
+  }
+  void restart() {
+    enemies = 2;
+    for (int i = 0; i<12; i++) {
+      lvl[i]=true;
+      colors[i] = color(random(100, 255), random(100, 255), random(100, 255));
+    }
+
+    //set colors for each level with for loops
+    for (int i = 0; i<2; i++) {
+      c[i] =colors[0];
+    }
+    for (int i = 2; i<5; i++) {
+      c[i] =colors[1];
+    }
+    for (int i = 5; i<10; i++) {
+      c[i] =colors[2];
+    }
+    for (int j = 0; j<9; j++) {
+      for (int i = 10+j*10; i<20+j*10; i++) {
+        c[i] = colors[3+j];
+      }
+    }
+
+    //set random spawn times and set eveything to 0
+    for (int i = 0; i<100; i++) {
+
+
+
+      if (i<5) {
+        spawnTime[i] = random(0.87, 1.5);
+      }
+      if (i>=5&&i<=40) {
+        spawnTime[i] = random(0.1, 1.4);
+      }
+      if (i>40) {
+        spawnTime[i] = random(0.1, 0.7);
+      }
+
+      spawn[i] = 0;
+      counter[i] = 0;
+      //even goes on left odd goes on right side of screen
+      if (i%2==0) {
+        ls[i] = new PVector(random(350), random(800));
+      } else {
+        ls[i] = new PVector(random(450, 800), random(800));
+      }
     }
   }
 }
