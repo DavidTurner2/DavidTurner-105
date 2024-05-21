@@ -5,10 +5,12 @@ Boolean r = false;
 float speed = 4.002;
 Boost[] part = new Boost[8];
 boolean colliding = false;
+PVector[] spike = new PVector[8];
 int a = 0;
 void setup() {
   for (int i = 0; i<8; i++) {
-    part[i]=new Boost(50, 150);
+    part[i] = new Boost(50, 200);
+    spike[i] = new PVector(0, 0);
   }
   size(800, 800);
 }
@@ -20,20 +22,20 @@ void draw() {
   background(0);
   noStroke();
   fill(255, 0, 0);
-  translate(0,400-p.y);
+  translate(0, 400-p.y);
   a=0;
 
   if (l&&colliding==false) {
-      p.x-=speed;    
+    p.x-=speed;
   }
   if (r&&colliding==false) {
-      p.x+=speed;    
+    p.x+=speed;
   }
-  if(p.x>width){
-   p.x=0; 
+  if (p.x>width) {
+    p.x=0;
   }
-   if(p.x<0){
-   p.x=width; 
+  if (p.x<0) {
+    p.x=width;
   }
   for (int i = 0; i<part.length; i++) {
     if (!(collision(part[i].rect, part[i].rectSize.x, part[i].rectSize.y))) {
@@ -46,8 +48,14 @@ void draw() {
       colliding = false;
     }
   }
+  fill(255);
   square(p.x, p.y, 40);
-  part[0].update(550, 348);
+  spike[0].set(496,282);
+  triangle(spike[0].x+20,spike[0].y,spike[0].x-20,spike[0].y,spike[0].x,spike[0].y+-52);
+    triangle(spike[0].x+20,spike[0].y,spike[0].x-20,spike[0].y,spike[0].x,spike[0].y+52);
+
+  circle(spike[0].x,spike[0].y,50);
+  part[0].update(550, 288);
   part[1].update(219, 170);
   part[2].update(0, 0);
 }
@@ -61,19 +69,19 @@ boolean collision(PVector a, float wide, float high) {
 }
 
 void keyPressed() {
-  if (key == 'a') {
+  if (key == 'a'||key=='A'||keyCode==LEFT) {
     l = true;
   }
-  if (key == 'd') {
+  if (key == 'd'||key=='D'||keyCode==RIGHT) {
     r = true;
   }
 }
 
 void keyReleased() {
-  if (key == 'a') {
+  if (key == 'a'||key=='A'||keyCode==LEFT) {
     l = false;
   }
-  if (key == 'd') {
+  if (key == 'd'||key=='D'||keyCode==RIGHT) {
     r = false;
   }
 }
@@ -94,9 +102,12 @@ class Boost {
     } else {
       rect.set(x, y);
     }
-    fill(r, g, b);
+    //fill(r, g, b);
     rect(rect.x, rect.y, rectSize.x, rectSize.y);
     if (collision(rect, rectSize.x, rectSize.y)) {
+      if (p.x<rect.x) {
+        p.x-=0.1;
+      }
       if (frameCount%15==0) {
         r = random(50, 155);
         g = random(50, 155);
