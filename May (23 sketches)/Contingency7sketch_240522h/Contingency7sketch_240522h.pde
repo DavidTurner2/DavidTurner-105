@@ -1,3 +1,12 @@
+//https://www.wikiart.org/en/ralph-hotere/red-on-black-1969
+
+
+
+
+
+//Red on black
+//Ralph Hotere
+//Date: 1969
 void setup(){
  size(400,800); 
 }
@@ -8,15 +17,7 @@ void draw(){
   line(100,400,300,400);
 
 }
-/*https://www.wikiart.org/en/ralph-hotere/red-on-black-1969
-
-
-
-
-
-Red on black
-Ralph Hotere
-Date: 1969
+/*
 
 
 Diagonal

@@ -15,7 +15,7 @@ void setup() {
   println(rng.length);
 }
 PVector sel = new PVector(0, 0);
-int minigame = 8;
+int minigame = 0;
 //button to go to
 Button goTo = new Button();
 Button restart = new Button();
@@ -89,17 +89,12 @@ void draw() {
     m8.update();
   }
   if (minigame==100) {
-
-
-
-    if (game=="m1") {
-      fill(255);
-      textSize(30);
-      text("TIME: "+time+" Seconds", 200, 400);
-      text("wrong color clicks: "+bad, 200, 450);
-      goTo.update(new PVector(269, 500), "UNPOLISH NEXT", -22, 159, 6, 2, "", sx, sy);
-      restart.update(new PVector(100, 500), " RESTART", -22, 159, 6, 1, "", sx, sy);
-    }
+    fill(255);
+    textSize(30);
+    text("TIME: "+time+" Seconds", 200, 400);
+    text("wrong color clicks: "+bad, 200, 450);
+    goTo.update(new PVector(269, 500), "UNPOLISH NEXT", -22, 159, 6, 2, "", sx, sy);
+    restart.update(new PVector(100, 500), " RESTART", -22, 159, 6, 1, "", sx, sy);
   }
 }
 void mousePressed() {
