@@ -24,8 +24,8 @@ class LineArt {
       fill(255);
       textSize(30);
       text("TIME: "+gtime+" Seconds", 200, 340);
-      goTo.update(new PVector(488, 203), "UNPOLISH NEXT", -22, 159, 6, 2, "end", sx, sy);
-      restart.update(new PVector(100, 204), " RESTART", -22, 159, 6, 2, "end", sx, sy);
+      goTo.update(new PVector(488, 203), "UNPOLISH NEXT", -22, 159, 6, 3, "", sx, sy);
+      restart.update(new PVector(100, 204), " RESTART", -22, 159, 6, 2, "", sx, sy);
       translate(-162, 0);
       noStroke();
       fill(255);

@@ -1,7 +1,7 @@
 
 PVector p = new PVector(400, 400);
-Boolean l = false;
-Boolean r = false;
+boolean l = false;
+boolean r = false;
 float speed = 4.002;
 Boost[] part = new Boost[8];
 boolean colliding = false;

@@ -19,7 +19,7 @@ PVector[] spawnLocations = {new PVector(-40, 83.4, -130), new PVector(-56, 83.4,
 
 //sky from textures.com
 PImage sky;
-Vending[] vm = new Vending[1];
+Vending[] vm = new Vending[100];
 Player p = new Player();
 PVector sel = new PVector(0, 0);
 PVector sel3d = new PVector(0, 0);
@@ -28,12 +28,17 @@ int money = 0;
 
 float zoom = 0;
 Boolean zoomed = false;
-Boolean shop = true;
+float nextOne = 0;
+boolean goLeft = false;
+boolean goRight = false;
+Boolean shop = false;
 Boolean purchase = false;
-
+int current = 0;
 void setup() {
   //create vending machine objects
-  vm[0] = new Vending();
+  for(int i = 0; i<100;i++){
+  vm[i] = new Vending();
+  }
   //set size to 800,800 and render in p3d mode
   size(800, 800, P3D);
   //load images and 3d objects
@@ -107,6 +112,29 @@ void draw() {
     }
   }
 
+  if (goLeft&&goRight==false) {
+    nextOne-=3.1;
+    if (nextOne<-333) {
+      if(current<100){
+      current++;
+      nextOne =333;
+      goRight = true;
+      println(nextOne);
+      }else{
+       current = 0;
+       nextOne = 0;
+      }
+    }
+  }
+  if (goRight) {
+    nextOne-=3.1;
+    if(nextOne<=0){
+      goLeft = false;
+     goRight=false; 
+     nextOne = 0;
+    }
+  }
+
   //grass
   pushMatrix();
   if (shop==false) {
@@ -122,10 +150,12 @@ void draw() {
   if (shop) {
     translate(1000, 1000, 1000);
   }
-  translate(0, 0, zoom);
-  vm[0].update();
+
+
+  translate(nextOne, 0, zoom);
+  vm[current].update();
   popMatrix();
-  p.update(0);
+  p.update(current);
 }
 //vending machines array of objects
 //seperate player class saves stuff from vending machine and money
@@ -139,7 +169,7 @@ void mouseClicked() {
   }
 }
 class Player {
-  int[] inventory = {0, 0, 0, 0, 0};
+  IntList inventory = new IntList();
   String inspect = "";
   String text = "Enter Item #";
   String value = "";
@@ -151,7 +181,8 @@ class Player {
   PVector glass = new PVector(357, 344);
   PVector screen = new PVector(319, 340);
   PVector change = new PVector(327, 437);
-
+  int item;
+  int row;
   Player() {
     c[0] = new PVector(473, 486);
     c[1] = new PVector(463, 494);
@@ -177,7 +208,7 @@ class Player {
     fill(#6b8093);
 
 
-    if (zoomed == false&&shop == false) {
+    if (zoomed == false&&shop == false&&goRight==false&&goLeft==false) {
       for (int i = 0; i<c.length; i++) {
         if (c[vm[v].pick.get(i)].dist(sel3d)<6) {
           fill(#FFFFFF);
@@ -191,29 +222,36 @@ class Player {
         }
       }
       //next machine
-      if (sel3d.x>next.x && sel3d.x<next.x+100 && sel3d.y>next.y&&sel3d.y<next.y+240) {
+      if (sel3d.x>next.x && sel3d.x<next.x+100 && sel3d.y>next.y&&sel3d.y<next.y+240&&goRight==false&&goLeft==false) {
         inspect = ">>>";
+
+        if (mousePressed) {
+          goLeft = true;
+        }
       }
       //back home
-      if (sel3d.x>back.x && sel3d.x<back.x+100 && sel3d.y>back.y&&sel3d.y<back.y+240) {
-        inspect = "<<<";
+      if (sel3d.x>back.x && sel3d.x<back.x+100 && sel3d.y>back.y&&sel3d.y<back.y+240&&goRight==false&&goLeft==false) {
+        inspect = "Go Home";
+        if (mousePressed) {
+        inspect = "UNFORTUNUTELY THIS IS A DEMO";
+        }
       }
       //inspect glass
-      if (sel3d.x>glass.x && sel3d.x<glass.x+105 && sel3d.y>glass.y&&sel3d.y<glass.y+109) {
+      if (sel3d.x>glass.x && sel3d.x<glass.x+105 && sel3d.y>glass.y&&sel3d.y<glass.y+109&&goRight==false&&goLeft==false) {
         inspect = "Zoom in";
         if (mousePressed&&shop==false) {
           zoomed = true;
         }
       }
       //screen
-      if (sel3d.x>screen.x && sel3d.x<screen.x+37 && sel3d.y>screen.y&&sel3d.y<screen.y+93) {
+      if (sel3d.x>screen.x && sel3d.x<screen.x+37 && sel3d.y>screen.y&&sel3d.y<screen.y+93&&goRight==false&&goLeft==false) {
         inspect = "Buy Item";
         if (mousePressed&&zoomed == false) {
           shop = true;
         }
       }
       //change
-      if (sel3d.x>change.x && sel3d.x<change.x+21 && sel3d.y>change.y&&sel3d.y<change.y+31) {
+      if (sel3d.x>change.x && sel3d.x<change.x+21 && sel3d.y>change.y&&sel3d.y<change.y+31&&goRight==false&&goLeft==false) {
         if ( vm[v].change>0) {
           inspect = vm[v].change+"¢";
           if (mousePressed) {
@@ -227,34 +265,52 @@ class Player {
       // circle(sel4d.x, sel4d.y, 10);
       for (int i = 0; i<A.length; i++) {
         if (A[i].dist(sel4d)<8) {
-          inspect = "A"+(i+1);
+          inspect = "A"+(8-i);
         }
       }
       for (int i = 0; i<B.length; i++) {
         if (B[i].dist(sel4d)<8) {
-          inspect = "B"+(i+1);
+          inspect = "B"+(8-i);
         }
       }
       for (int i = 0; i<C.length; i++) {
         if (C[i].dist(sel4d)<8) {
-          inspect = "C"+(i+1);
+          inspect = "C"+(8-i);
         }
       }
       for (int i = 0; i<D.length; i++) {
         if (D[i].dist(sel4d)<8) {
-          inspect = "D"+(i+1);
+          inspect = "D"+(8-i);
         }
       }
       textSize(10.5);
       text(inspect, -7+sel4d.x, sel4d.y, 7);
     } else if (shop) {
+
       fill(89);
       rect(0, 0, 800, 800);
       fill(0);
       rect(200, 12, 400, 272);
+      textSize(20);
+      fill(0);
+      text("player money:"+money+"¢", 50, 300);
+            text("player inventory\n"+inventory, 20, 400);
+
       fill(#455F41);
       textSize(44);
       text(text, 284, 142);
+      fill(200, 80, 90);
+      if (sel.x>200&&sel.x<200+400&&sel.y>720&&sel.y<720+70) {
+        fill(255, 75, 60);
+        if (mousePressed) {
+          shop=false;
+        }
+      }
+
+      rect(200, 720, 400, 70);
+      fill(255);
+      text("Exit", 350, 760);
+
       if (purchase) {
         textSize(30);
 
@@ -267,6 +323,16 @@ class Player {
               money -= cart;
               clearMachine();
               //start animation
+              if (row == 1) {
+                inventory.append(vm[v].row1[item-1][1]);
+              } else if (row==2) {
+                inventory.append(vm[v].row2[item-1][1]);
+              } else if (row==3) {
+                inventory.append(vm[v].row3[item-1][1]);
+              } else if (row==4) {
+                inventory.append(vm[v].row4[item-1][1]);
+              }
+              shop=false;
             } else {
               text = "INSUFFICENT\nFUNDS";
               clearMachine();
@@ -298,16 +364,22 @@ class Player {
             if (value.charAt(1) == ('0'+i)) {
               if (vm[v].row1[i-1][0]>0) {
                 if (vm[v].row1[i-1][1]==0) {
+                  row =1;
+                  item = i;
                   cart = 250;
                   text = "SELECTED: $2.50";
                   purchase = true;
                 }
                 if (vm[v].row1[i-1][1]==1) {
+                  row =1;
+                  item = i;
                   text = "SELECTED: $3.50";
                   cart = 350;
                   purchase = true;
                 }
                 if (vm[v].row1[i-1][1]>1) {
+                  row =1;
+                  item = i;
                   cart = 450;
                   text = "SELECTED: $4.50";
                   purchase = true;
@@ -320,6 +392,110 @@ class Player {
             }
           }
         }
+
+        if (value.charAt(0) == 'B'&&purchase==false) {
+          for (int i = 1; i<9; i++) {
+            if (value.charAt(1) == ('0'+i)) {
+              if (vm[v].row2[i-1][0]>0) {
+                if (vm[v].row2[i-1][1]==0) {
+                  row =2;
+                  item = i;
+                  cart = 250;
+                  text = "SELECTED: $2.50";
+                  purchase = true;
+                }
+                if (vm[v].row2[i-1][1]==1) {
+                  row =2;
+                  item = i;
+                  text = "SELECTED: $3.50";
+                  cart = 350;
+                  purchase = true;
+                }
+                if (vm[v].row2[i-1][1]>1) {
+                  row =2;
+                  item = i;
+                  cart = 450;
+                  text = "SELECTED: $4.50";
+                  purchase = true;
+                }
+              } else {
+                text = "OUT OF STOCK";
+                clearMachine();
+                return;
+              }
+            }
+          }
+        }
+
+        if (value.charAt(0) == 'C'&&purchase==false) {
+          for (int i = 1; i<9; i++) {
+            if (value.charAt(1) == ('0'+i)) {
+              if (vm[v].row3[i-1][0]>0) {
+                if (vm[v].row3[i-1][1]==0) {
+                  row =3;
+                  item = i;
+                  cart = 250;
+                  text = "SELECTED: $2.50";
+                  purchase = true;
+                }
+                if (vm[v].row3[i-1][1]==1) {
+                  row =3;
+                  item = i;
+                  text = "SELECTED: $3.50";
+                  cart = 350;
+                  purchase = true;
+                }
+                if (vm[v].row3[i-1][1]>1) {
+                  row =3;
+                  item = i;
+                  cart = 450;
+                  text = "SELECTED: $4.50";
+                  purchase = true;
+                }
+              } else {
+                text = "OUT OF STOCK";
+                clearMachine();
+                return;
+              }
+            }
+          }
+        }
+
+        if (value.charAt(0) == 'D'&&purchase==false) {
+          for (int i = 1; i<9; i++) {
+            if (value.charAt(1) == ('0'+i)) {
+              if (vm[v].row4[i-1][0]>0) {
+                if (vm[v].row4[i-1][1]==0) {
+                  row =4;
+                  item = i;
+                  cart = 250;
+                  text = "SELECTED: $2.50";
+                  purchase = true;
+                }
+                if (vm[v].row4[i-1][1]==1) {
+                  row =4;
+                  item = i;
+                  text = "SELECTED: $3.50";
+                  cart = 350;
+                  purchase = true;
+                }
+                if (vm[v].row4[i-1][1]>1) {
+                  row =4;
+                  item = i;
+                  cart = 450;
+                  text = "SELECTED: $4.50";
+                  purchase = true;
+                }
+              } else {
+                text = "OUT OF STOCK";
+                clearMachine();
+                return;
+              }
+            }
+          }
+        }
+
+
         if (value.charAt(1)=='A'||value.charAt(1)=='B'||value.charAt(1)=='C'||value.charAt(1)=='D') {
           value="";
           for (int i = 0; i<pressed.length; i++) {

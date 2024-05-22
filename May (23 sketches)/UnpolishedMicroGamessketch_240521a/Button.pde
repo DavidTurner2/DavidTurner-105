@@ -13,9 +13,10 @@ class Button {
   Button() {
   }
   void update(PVector a, String t, float x, color b, color bc, int change, String m, float sx, float sy) {
+    game="m5";
     position.set(a);
     mode = m;
-    level = change;
+    level = change;    
     if (collision(a, sx, sy)) {
       selected = true;
       hover = 4*sin(step/2);
@@ -41,12 +42,18 @@ class Button {
   }
 
   void activate() {
+    if(selected&&mode=="pick"){
+      m8.end = true;
+    }
+    if(selected&&mode=="guess"){
+      m5.end = true;
+    }
     if (selected&&mode=="") {
       minigame = level;
-    }
-    if (selected&&mode=="end") {
       m2.restart();
-      minigame = level;
+      m3.restart();
+      m5.restart();
+      m8.restart();
     }
   }
 }

@@ -58,7 +58,7 @@ class Button {
       if (year==year()-18) {
         if (month==month()) {
           if (day<=day()) {
-            println("wow");
+            lvl=1000000000;
           } else {
             young = true;
             lvl = 1;
@@ -70,7 +70,7 @@ class Button {
           lvl = 1;
         }
       } else if (year<year()-18) {
-        println("wow");
+            lvl=1000000000;
       } else {
         young = true;
         lvl = 1;

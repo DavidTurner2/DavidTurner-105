@@ -39,7 +39,7 @@ class Vending {
       row4[i][1]=int(random(4));
     }
     //maximum of 4 coins left around machine
-    cs = int(random(1));
+    cs = int(random(5));
     for (int i = 0; i<cs; i++) {
       //choose from cents to be more realistic instead of it being a random number
       moneyLeft[i] = cents[int(random(cents.length))];
@@ -138,7 +138,6 @@ class Vending {
           popMatrix();
         }
       }
-
       for (int i=0; i<row2[j][0]; i++) {
         if (row2[j][1]==0) {
           pushMatrix();
@@ -160,7 +159,6 @@ class Vending {
           popMatrix();
         }
       }
-
       for (int i=0; i<row3[j][0]; i++) {
         if (row3[j][1]==0) {
           pushMatrix();
@@ -182,7 +180,6 @@ class Vending {
           popMatrix();
         }
       }
-
       for (int i=0; i<row4[j][0]; i++) {
         if (row1[j][1]==0) {
           pushMatrix();

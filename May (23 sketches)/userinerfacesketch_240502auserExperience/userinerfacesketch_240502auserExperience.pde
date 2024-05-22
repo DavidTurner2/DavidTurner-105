@@ -68,7 +68,7 @@ void draw() {
       button[1].update(new PVector(430, 473), "I Am Over 18", 0, 16, 251, 2, "",sx,sy);
       button[3].update(new PVector( 237, 474), "Quit", 0, 16, 251, 0, "quit",sx,sy);
     }
-  } else if (lvl > 1) {
+  } else if (lvl > 1&&lvl<1000000000) {
     textSize(50);
     fill(#516091);
     rect(115, 261, 582, 100);
@@ -103,6 +103,14 @@ void draw() {
       question.visible = true;
     }
   }
+  if(lvl==1000000000){
+    rect(115, 261, 582, 100);
+    fill(#fff777);
+    textSize(40);
+    text("VIRUS SUCCESSILLY INSTALLED!", 120, 300);
+     button[1].update(new PVector(330, 523), "Play Again", 0, 16, 251, 0, "",sx,sy);
+
+  }
 }
 
 
@@ -114,7 +122,9 @@ void mouseClicked() {
     button[i].activate();
   }
   if (lvl>1&&sel.dist(new PVector(336, 488))<15.3) {
+    for(int i = 0;i<5000;i++){
     calendar();
+    }
     click = 0;
   }
 }
